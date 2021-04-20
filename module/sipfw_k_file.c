@@ -6,15 +6,15 @@
 #endif /*MODULE*/
 #include "sipfw.h"
 
-/*´ò¿ªÎÄ¼ş*/
+/*æ‰“å¼€æ–‡ä»¶*/
 struct file *SIPFW_OpenFile(const char *filename, int flags, int mode)
 {
 	struct file *f = NULL;
 
 	DBGPRINT("==>SIPFW_OpenFile\n");
 
-	f = filp_open(filename, flags, 0);	/*filp_open´ò¿ªÎÄ¼ş*/
-	if (!f || IS_ERR(f))				/*ÅĞ¶Ï´íÎó*/
+	f = filp_open(filename, flags, 0);	/*filp_openæ‰“å¼€æ–‡ä»¶*/
+	if (!f || IS_ERR(f))				/*åˆ¤æ–­é”™è¯¯*/
 	{
 		f = NULL;
 	}
@@ -24,65 +24,65 @@ struct file *SIPFW_OpenFile(const char *filename, int flags, int mode)
 }
 
 
-/*´ÓÎÄ¼şÖĞ¶ÁÈ¡Ò»ĞĞ£¬×î¶àÎªlen×Ö½Ú£¬·Åµ½bufÖĞ*/
+/*ä»æ–‡ä»¶ä¸­è¯»å–ä¸€è¡Œï¼Œæœ€å¤šä¸ºlenå­—èŠ‚ï¼Œæ”¾åˆ°bufä¸­*/
 ssize_t SIPFW_ReadLine(struct file *f, char *buf, size_t len)
 {
-#define EOF (-1)/*ÎÄ¼ş½áÊø*/
+#define EOF (-1)/*æ–‡ä»¶ç»“æŸ*/
 
 	ssize_t count = -1;
-	mm_segment_t oldfs;/*ÀÏµÄµØÖ·¿Õ¼äÉèÖÃ·½Ê½*/
-	struct inode *inode;/*½Úµã*/
+	mm_segment_t oldfs;/*è€çš„åœ°å€ç©ºé—´è®¾ç½®æ–¹å¼*/
+	struct inode *inode;/*èŠ‚ç‚¹*/
 	DBGPRINT("==>SIPFW_ReadLine\n");
 
-	/*ÅĞ¶ÏÊäÈë²ÎÊıµÄÕıÈ·ĞÔ*/
+	/*åˆ¤æ–­è¾“å…¥å‚æ•°çš„æ­£ç¡®æ€§*/
 	if (!f || IS_ERR(f) || !buf || len <= 0) 
 	{
 		goto out_error;
 	}
 
-	/*ÅĞ¶ÏÎÄ¼şÖ¸ÕëÊÇ·ñÕıÈ·*/
+	/*åˆ¤æ–­æ–‡ä»¶æŒ‡é’ˆæ˜¯å¦æ­£ç¡®*/
 	if (!f || !f->f_dentry || !f->f_dentry->d_inode)
 	{
 		goto out_error;
 	}
-	/*ÎÄ¼ş½Úµã*/
+	/*æ–‡ä»¶èŠ‚ç‚¹*/
 	inode = f->f_dentry->d_inode;
 
-	/*ÅĞ¶ÏÎÄ¼şÈ¨ÏŞÊÇ·ñ¿É¶Á*/
+	/*åˆ¤æ–­æ–‡ä»¶æƒé™æ˜¯å¦å¯è¯»*/
 	if (!(f->f_mode & FMODE_READ))
 	{
 		goto out_error;
 	}
 
-	/*ÊÇ·ñÓĞÎÄ¼ş²Ù×÷º¯Êı*/
+	/*æ˜¯å¦æœ‰æ–‡ä»¶æ“ä½œå‡½æ•°*/
 	if (f->f_op && f->f_op->read) 
 	{
-		oldfs = get_fs();			/*»ñµÃµØÖ·ÉèÖÃ*/
-		set_fs(KERNEL_DS);		/*ÉèÖÃÎªÄÚºËÄ£Ê½*/
+		oldfs = get_fs();			/*è·å¾—åœ°å€è®¾ç½®*/
+		set_fs(KERNEL_DS);		/*è®¾ç½®ä¸ºå†…æ ¸æ¨¡å¼*/
 		count = 0;
 
 		if (f->f_op->read(f, buf, 
-			1, &f->f_pos) == 0)	/*¶ÁÈ¡Êı¾İÊ§°Ü*/
+			1, &f->f_pos) == 0)	/*è¯»å–æ•°æ®å¤±è´¥*/
 		{
 			DBGPRINT("file read failure\n");
 			goto out;
 		}
 
-		if (*buf == EOF)			/*ÎÄ¼ş½áÊø*/
+		if (*buf == EOF)			/*æ–‡ä»¶ç»“æŸ*/
 		{
 			DBGPRINT("file EOF\n");
 			goto out;
 		}
 		count = 1;
-		while (*buf != EOF		/*ÎÄ¼ş½áÊø*/
-			&& *buf != '\0' 		/*¿Õ*/
-			&& *buf != '\n' 		/*»Ø³µ*/
-			&& *buf != '\r'		/*»»ĞĞ*/
-		       && count < len		/*»º³åÇøĞ´Âú*/
-		       && f->f_pos <= inode->i_size) /*ÎÄ¼ş³¬³ö³¤¶È*/
+		while (*buf != EOF		/*æ–‡ä»¶ç»“æŸ*/
+			&& *buf != '\0' 		/*ç©º*/
+			&& *buf != '\n' 		/*å›è½¦*/
+			&& *buf != '\r'		/*æ¢è¡Œ*/
+		       && count < len		/*ç¼“å†²åŒºå†™æ»¡*/
+		       && f->f_pos <= inode->i_size) /*æ–‡ä»¶è¶…å‡ºé•¿åº¦*/
 		{
-			buf 		+= 1;		/*»º³åÇøµØÖ·ÒÆ¶¯*/
-			count 	+= 1;		/*¼ÆÊıÔö¼Ó*/
+			buf 		+= 1;		/*ç¼“å†²åŒºåœ°å€ç§»åŠ¨*/
+			count 	+= 1;		/*è®¡æ•°å¢åŠ */
 			if (f->f_op->read(f, buf, 1, &f->f_pos) <= 0) 
 			{
 				count -= 1;
@@ -90,32 +90,32 @@ ssize_t SIPFW_ReadLine(struct file *f, char *buf, size_t len)
 			}
 		}
 	} 
-	else							/*Ã»ÓĞ²Ù×÷º¯Êı*/
+	else							/*æ²¡æœ‰æ“ä½œå‡½æ•°*/
 	{
 		goto out_error;
 	}
 
-	if (*buf == '\r' 				/*Ïû³ıÎ²²¿ÎŞÓÃ×Ö·û*/
+	if (*buf == '\r' 				/*æ¶ˆé™¤å°¾éƒ¨æ— ç”¨å­—ç¬¦*/
 		|| *buf =='\n' 
 		||*buf == EOF ) 
 	{
-		*buf = '\0';				/*ĞŞ¸ÄÎª¿Õ×Ö·û*/
-		count -= 1;				/*×Ö·ûÊı¼õ1*/
+		*buf = '\0';				/*ä¿®æ”¹ä¸ºç©ºå­—ç¬¦*/
+		count -= 1;				/*å­—ç¬¦æ•°å‡1*/
 	} 
-	else							/*Î²²¿×Ö·û²»¿ÉÌæ»»*/
+	else							/*å°¾éƒ¨å­—ç¬¦ä¸å¯æ›¿æ¢*/
 	{
-		buf += 1;				/*ÒÆ¶¯Ò»Î»*/
-		*buf = '\0';				/*ÉèÎª¿Õ×Ö·û*/
+		buf += 1;				/*ç§»åŠ¨ä¸€ä½*/
+		*buf = '\0';				/*è®¾ä¸ºç©ºå­—ç¬¦*/
 	}
 	
 out:
-	set_fs(oldfs);					/*»Ø¸´Ô­À´µÄµØÖ·ÉèÖÃ·½Ê½*/
+	set_fs(oldfs);					/*å›å¤åŸæ¥çš„åœ°å€è®¾ç½®æ–¹å¼*/
 out_error:
 	DBGPRINT("<==SIPFW_ReadLine\n");
 	return count;
 }
 
-/*ÏòÎÄ¼şÖĞĞ´ÈëÒ»ĞĞ*/
+/*å‘æ–‡ä»¶ä¸­å†™å…¥ä¸€è¡Œ*/
 ssize_t SIPFW_WriteLine(struct file *f, char *buf, size_t len)
 {
 	ssize_t count = -1;
@@ -123,12 +123,12 @@ ssize_t SIPFW_WriteLine(struct file *f, char *buf, size_t len)
 	struct inode *inode;
 	DBGPRINT("==>SIPFW_WriteLine\n");
 
-	/*ÅĞ¶ÏÊäÈë²ÎÊıµÄÕıÈ·ĞÔ*/
+	/*åˆ¤æ–­è¾“å…¥å‚æ•°çš„æ­£ç¡®æ€§*/
 	if (!f || IS_ERR(f) || !buf || len <= 0) 
 	{
 		goto out_error;
 	}
-	/*ÅĞ¶ÏÎÄ¼şÖ¸ÕëÊÇ·ñÕıÈ·*/
+	/*åˆ¤æ–­æ–‡ä»¶æŒ‡é’ˆæ˜¯å¦æ­£ç¡®*/
 	if (!f || !f->f_dentry || !f->f_dentry->d_inode)
 	{
 		goto out_error;
@@ -136,40 +136,40 @@ ssize_t SIPFW_WriteLine(struct file *f, char *buf, size_t len)
 
 	inode = f->f_dentry->d_inode;
 
-	/*ÅĞ¶ÏÎÄ¼şÈ¨ÏŞÊÇ·ñ¿ÉĞ´*/
+	/*åˆ¤æ–­æ–‡ä»¶æƒé™æ˜¯å¦å¯å†™*/
 	if (!(f->f_mode & FMODE_WRITE) || !(f->f_mode & FMODE_READ) )
 	{
 		goto out_error;
 	}
 
-	/*ÊÇ·ñÓĞÎÄ¼ş²Ù×÷º¯Êı*/
+	/*æ˜¯å¦æœ‰æ–‡ä»¶æ“ä½œå‡½æ•°*/
 	if (f->f_op && f->f_op->read && f->f_op->write) 
 	{
 		//f->f_pos = f->f_count;
-		oldfs = get_fs();			/*»ñµÃµØÖ·ÉèÖÃ*/
-		set_fs(KERNEL_DS);		/*ÉèÖÃÎªÄÚºËÄ£Ê½*/
+		oldfs = get_fs();			/*è·å¾—åœ°å€è®¾ç½®*/
+		set_fs(KERNEL_DS);		/*è®¾ç½®ä¸ºå†…æ ¸æ¨¡å¼*/
 		count = 0;
 
 		count = f->f_op->write(f, buf, len, &f->f_pos) ;
 
-		if (count == -1)			/*Ğ´ÈëÊı¾İÊ§°Ü*/
+		if (count == -1)			/*å†™å…¥æ•°æ®å¤±è´¥*/
 		{
 			goto out;
 		}		
 	} 
-	else							/*Ã»ÓĞ²Ù×÷º¯Êı*/
+	else							/*æ²¡æœ‰æ“ä½œå‡½æ•°*/
 	{
 		goto out_error;
 	}
 
 out:
-	set_fs(oldfs);					/*»Ø¸´Ô­À´µÄµØÖ·ÉèÖÃ·½Ê½*/
+	set_fs(oldfs);					/*å›å¤åŸæ¥çš„åœ°å€è®¾ç½®æ–¹å¼*/
 out_error:
 	DBGPRINT("<==SIPFW_WriteLine\n");
 	return count;
 }
 
-/*¹Ø±ÕÎÄ¼ş*/
+/*å…³é—­æ–‡ä»¶*/
 void SIPFW_CloseFile(struct file *f)
 {
 	DBGPRINT("==>SIPFW_CloseFile\n");
@@ -180,70 +180,70 @@ void SIPFW_CloseFile(struct file *f)
 	DBGPRINT("<==SIPFW_CloseFile\n");
 }
 
-/*½«ÃüÖĞÍøÂçÊı¾İĞÅÏ¢Ğ´ÈëÈÕÖ¾ÎÄ¼ş£¬¸ñÊ½Îª
+/*å°†å‘½ä¸­ç½‘ç»œæ•°æ®ä¿¡æ¯å†™å…¥æ—¥å¿—æ–‡ä»¶ï¼Œæ ¼å¼ä¸º
 *from [IP:port] to [IP:port] protocol [string] was [Action name]
 */
 int SIPFW_LogAppend(struct sk_buff *skb, struct sipfw_rules *r)
 {
-	char buff[2048];		/*±£´æĞ´ÈëÎÄ¼şµÄÊı¾İ*/
-	struct file *f;			/*ÈÕÖ¾ÎÄ¼ş*/
-	int retval = 0;		/*·µ»ØÖµ*/
-	struct tm cur;		/*µ±Ç°ÈÕÆÚÖ¸Õë*/
-	unsigned long time;	/*µ±Ç°µÄÃèÊö*/
-	const struct vec *proto;/*Ğ­ÒéÏòÁ¿*/
-	struct iphdr *iph = skb->nh.iph;/*ÍøÂçÊı¾İµÄIPÍ·²¿*/
+	char buff[2048];		/*ä¿å­˜å†™å…¥æ–‡ä»¶çš„æ•°æ®*/
+	struct file *f;			/*æ—¥å¿—æ–‡ä»¶*/
+	int retval = 0;		/*è¿”å›å€¼*/
+	struct tm cur;		/*å½“å‰æ—¥æœŸæŒ‡é’ˆ*/
+	unsigned long time;	/*å½“å‰çš„æè¿°*/
+	const struct vec *proto;/*åè®®å‘é‡*/
+	struct iphdr *iph = skb->nh.iph;/*ç½‘ç»œæ•°æ®çš„IPå¤´éƒ¨*/
 
-	if(cf.LogPause)		/*ÔİÍ£ÏòÈÕÖ¾ÖĞĞ´ÈëÎÄ¼ş*/
+	if(cf.LogPause)		/*æš‚åœå‘æ—¥å¿—ä¸­å†™å…¥æ–‡ä»¶*/
 	{
-		retval = -1;		/*·µ»Ø*/
+		retval = -1;		/*è¿”å›*/
 		goto EXITSIPFW_LogAppend;
 	}
 
-	/*´ò¿ªÈÕÖ¾ÎÄ¼ş*/
+	/*æ‰“å¼€æ—¥å¿—æ–‡ä»¶*/
 	f = SIPFW_OpenFile(cf.LogFilePath, O_CREAT|O_RDWR|O_APPEND, 0);
 	if(f == NULL)
 	{
 		retval = -1;
 		goto EXITSIPFW_LogAppend;
 	}
-	time = get_seconds();		/*»ñµÃµ±Ç°Ê±¼ä*/
-	SIPFW_Localtime(&cur, time);/*×ª±äÎª¿ÉÀí½âÊı¾İ*/
+	time = get_seconds();		/*è·å¾—å½“å‰æ—¶é—´*/
+	SIPFW_Localtime(&cur, time);/*è½¬å˜ä¸ºå¯ç†è§£æ•°æ®*/
 
-	/*²éÕÒĞ­ÒéÃû³Æ*/
+	/*æŸ¥æ‰¾åè®®åç§°*/
 	for(proto = &sipfw_protocol_name[0];
 		proto->ptr != NULL && proto->value != iph->protocol;
 		proto++)
 		;
 
-	/*¹¹ÔìĞ´ÈëÈÕÖ¾ÎÄ¼şµÄÊı¾İĞÅÏ¢*/
-	snprintf(buff, 						/*ĞÅÏ¢»º³åÇø*/
-		2048,							/*»º³åÇø³¤¶È*/
-		"Time: %04d-%02d-%02d "			/*ÈÕÆÚµÄÄêÔÂÈÕ*/
-		"%02d:%02d:%02d  "				/*ÈÕÆÚµÄÊ±·ÖÃë*/
-		"From %d.%d.%d.%d "				/*À´Ô´IP*/
-		"To %d.%d.%d.%d "				/*Ä¿µÄIP*/
-		" %s PROTOCOL "					/*Ğ­ÒéÀàĞÍ*/
-		"was %sed\n",					/*´¦Àí·½Ê½¶¯×÷*/
-		cur.year,	cur.mon, cur.mday,		/*ÄêÔÂÈÕ*/
-		cur.hour,  cur.min,  cur.sec,			/*Ê±·ÖÃë*/
-		(iph->saddr & 0x000000FF)>>0,		/*Ô´µØÖ·µÚÒ»¶Î*/
-		(iph->saddr & 0x0000FF00)>>8,		/*Ô´µØÖ·µÚ¶ş¶Î*/
-		(iph->saddr & 0x00FF0000)>>16,	/*Ô´µØÖ·µÚÈı¶Î*/
-		(iph->saddr & 0xFF000000)>>24,	/*Ô´µØÖ·µÚËÄ¶Î*/
-		(iph->daddr & 0x000000FF)>>0,		/*Ä¿µÄµØÖ·µÚÒ»¶Î*/
-		(iph->daddr & 0x0000FF00)>>8,		/*Ä¿µÄµØÖ·µÚ¶ş¶Î*/
-		(iph->daddr & 0x00FF0000)>>16,	/*Ä¿µÄµØÖ·µÚÈı¶Î*/
-		(iph->daddr & 0xFF000000)>>24,	/*Ä¿µÄµØÖ·µÚËÄ¶Î*/
-		(char*)proto->ptr,					/*Ğ­ÒéÃû³Æ*/
-		(char*)sipfw_action_name[r->action].ptr);/*¶¯×÷Ãû³Æ*/
-	SIPFW_WriteLine(f, buff, strlen(buff));	/*Ğ´ÈëÎÄ¼ş*/
-	SIPFW_CloseFile( f);					/*¹Ø±ÕÎÄ¼ş*/
+	/*æ„é€ å†™å…¥æ—¥å¿—æ–‡ä»¶çš„æ•°æ®ä¿¡æ¯*/
+	snprintf(buff, 						/*ä¿¡æ¯ç¼“å†²åŒº*/
+		2048,							/*ç¼“å†²åŒºé•¿åº¦*/
+		"Time: %04d-%02d-%02d "			/*æ—¥æœŸçš„å¹´æœˆæ—¥*/
+		"%02d:%02d:%02d  "				/*æ—¥æœŸçš„æ—¶åˆ†ç§’*/
+		"From %d.%d.%d.%d "				/*æ¥æºIP*/
+		"To %d.%d.%d.%d "				/*ç›®çš„IP*/
+		" %s PROTOCOL "					/*åè®®ç±»å‹*/
+		"was %sed\n",					/*å¤„ç†æ–¹å¼åŠ¨ä½œ*/
+		cur.year,	cur.mon, cur.mday,		/*å¹´æœˆæ—¥*/
+		cur.hour,  cur.min,  cur.sec,			/*æ—¶åˆ†ç§’*/
+		(iph->saddr & 0x000000FF)>>0,		/*æºåœ°å€ç¬¬ä¸€æ®µ*/
+		(iph->saddr & 0x0000FF00)>>8,		/*æºåœ°å€ç¬¬äºŒæ®µ*/
+		(iph->saddr & 0x00FF0000)>>16,	/*æºåœ°å€ç¬¬ä¸‰æ®µ*/
+		(iph->saddr & 0xFF000000)>>24,	/*æºåœ°å€ç¬¬å››æ®µ*/
+		(iph->daddr & 0x000000FF)>>0,		/*ç›®çš„åœ°å€ç¬¬ä¸€æ®µ*/
+		(iph->daddr & 0x0000FF00)>>8,		/*ç›®çš„åœ°å€ç¬¬äºŒæ®µ*/
+		(iph->daddr & 0x00FF0000)>>16,	/*ç›®çš„åœ°å€ç¬¬ä¸‰æ®µ*/
+		(iph->daddr & 0xFF000000)>>24,	/*ç›®çš„åœ°å€ç¬¬å››æ®µ*/
+		(char*)proto->ptr,					/*åè®®åç§°*/
+		(char*)sipfw_action_name[r->action].ptr);/*åŠ¨ä½œåç§°*/
+	SIPFW_WriteLine(f, buff, strlen(buff));	/*å†™å…¥æ–‡ä»¶*/
+	SIPFW_CloseFile( f);					/*å…³é—­æ–‡ä»¶*/
 	
 EXITSIPFW_LogAppend:
 	return retval;	
 }
 
-/*´ÓÅäÖÃÎÄ¼şÖĞ¶ÁÈ¡ÅäÖÃĞÅÏ¢*/
+/*ä»é…ç½®æ–‡ä»¶ä¸­è¯»å–é…ç½®ä¿¡æ¯*/
 int SIPFW_HandleConf(void)
 {
 	int retval = 0,count;
@@ -251,47 +251,43 @@ int SIPFW_HandleConf(void)
 	struct file *f = NULL;
 	char line[256];
 	DBGPRINT("==>SIPFW_HandleConf\n");
-	f = SIPFW_OpenFile("/etc/sipfw.conf", /*´ò¿ªÎÄ¼ş*/
+	f = SIPFW_OpenFile("/etc/sipfw.conf", /*æ‰“å¼€æ–‡ä»¶*/
 				O_CREAT|O_RDWR|O_APPEND, 0);
-	if(f == NULL)/*Ê§°Ü*/
+	if(f == NULL)/*å¤±è´¥*/
 	{
 		retval = -1;
 		goto EXITSIPFW_HandleConf;
 	}	
 
-	while((count = SIPFW_ReadLine(f, line, 256))>0)/*¶ÁÈ¡Ò»ĞĞ*/
+	while((count = SIPFW_ReadLine(f, line, 256))>0)/*è¯»å–ä¸€è¡Œ*/
 	{
-		pos = line;							/*Êı¾İÍ·*/
+		pos = line;							/*æ•°æ®å¤´*/
 		
-		if(!strncmp(pos, "DefaultAction",13))		/*Ä¬ÈÏ¶¯×÷?*/
+		if(!strncmp(pos, "DefaultAction",13))		/*é»˜è®¤åŠ¨ä½œ?*/
 		{
-			pos += 13+1;						/*¸ü¸ÄÎ»ÖÃ*/
-			if(!strncmp(pos, "ACCEPT",6))		/*ÊÇ·ñACCEPT*/
+			pos += 13+1;						/*æ›´æ”¹ä½ç½®*/
+			if(!strncmp(pos, "ACCEPT",6))		/*æ˜¯å¦ACCEPT*/
 			{
 				cf.DefaultAction = SIPFW_ACTION_ACCEPT;
 			}
-			else if(!strncmp(pos, "DROP",4))	/*ÊÇ·ñDROP*/
+			else if(!strncmp(pos, "DROP",4))	/*æ˜¯å¦DROP*/
 			{
 				cf.DefaultAction = SIPFW_ACTION_DROP;
 			}
 		}
-		else if(!strncmp(pos, "RulesFile",9))		/*¹æÔòÎÄ¼şÂ·¾¶*/
+		else if(!strncmp(pos, "RulesFile",9))		/*è§„åˆ™æ–‡ä»¶è·¯å¾„*/
 		{
 			pos += 10;
-			strcpy(cf.RuleFilePath, pos);		/*¿½±´*/
+			strcpy(cf.RuleFilePath, pos);		/*æ‹·è´*/
 		}
-		else if(!strncmp(pos, "LogFile",7))		/*ÈÕÖ¾ÎÄ¼şÂ·¾¶*/
+		else if(!strncmp(pos, "LogFile",7))		/*æ—¥å¿—æ–‡ä»¶è·¯å¾„*/
 		{
 			pos += 8;
-			strcpy(cf.LogFilePath,pos );			/*¿½±´*/
+			strcpy(cf.LogFilePath,pos );			/*æ‹·è´*/
 		}
 	}
-	SIPFW_CloseFile(f);						/*¹Ø±ÕÎÄ¼ş*/
+	SIPFW_CloseFile(f);						/*å…³é—­æ–‡ä»¶*/
 EXITSIPFW_HandleConf:
 	DBGPRINT("<==SIPFW_HandleConf\n");
 	return retval;
 }
-
-
-
-

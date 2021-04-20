@@ -8,14 +8,14 @@
 
 
 #define MAX_COOKIE_LENGTH       PAGE_SIZE
-static struct proc_dir_entry *sipfw_proc_dir;				/*PROCµÄÄ¿Â¼*/
-static struct proc_dir_entry *sipfw_proc_info;			/*·À»ğÇ½µÄĞÅÏ¢*/
-static struct proc_dir_entry *sipfw_proc_defaultaction;	/*Ä¬ÈÏ¶¯×÷*/
-static struct proc_dir_entry *sipfw_proc_logpause;		/*Í£Ö¹ÈÕÖ¾Ğ´Èë*/
-static struct proc_dir_entry *sipfw_proc_invalid;			/*·À»ğÇ½ÖĞÖ¹*/
+static struct proc_dir_entry *sipfw_proc_dir;				/*PROCçš„ç›®å½•*/
+static struct proc_dir_entry *sipfw_proc_info;			/*é˜²ç«å¢™çš„ä¿¡æ¯*/
+static struct proc_dir_entry *sipfw_proc_defaultaction;	/*é»˜è®¤åŠ¨ä½œ*/
+static struct proc_dir_entry *sipfw_proc_logpause;		/*åœæ­¢æ—¥å¿—å†™å…¥*/
+static struct proc_dir_entry *sipfw_proc_invalid;			/*é˜²ç«å¢™ä¸­æ­¢*/
 static char *cookie_pot;  
 
-/*·À»ğÇ½ĞÅÏ¢¶Áº¯Êı*/
+/*é˜²ç«å¢™ä¿¡æ¯è¯»å‡½æ•°*/
 int SIPFW_ProcInfoRead( 	char *buffer, 
 					char **start, 
 					off_t offset,
@@ -24,19 +24,19 @@ int SIPFW_ProcInfoRead( 	char *buffer,
 					void *data )
 {
 	int len;
-	if (offset > 0) /*²»·ÖÒ³*/
+	if (offset > 0) /*ä¸åˆ†é¡µ*/
 	{
 		*eof = 1;
 		return 0;
 	}
-	/*½«ĞÅÏ¢´«¸øÓÃ»§¿Õ¼äÓÃ»§*/
-	len = sprintf(buffer, 		/*ĞÅÏ¢»º´æ*/
-		"DefaultAction:%s\n"	/*Ä¬ÈÏ¶¯×÷*/
-		"RulesFile:%s\n"		/*¹æÔòÎÄ¼şÎ»ÖÃ*/
-		"LogFile:%s\n"		/*ÈÕÖ¾ÎÄ¼şÎ»ÖÃ*/
-		"RulesNumber:%d\n"	/*¹æÔò×Ü¸öÊı*/
-		"HitNumber:%d\n"		/*¹æÔòÔËĞĞ¹ı³ÌÃüÖĞÊı*/
-		"FireWall:%s\n",		/*·À»ğÇ½ÊÇ·ñÖÕÖ¹*/
+	/*å°†ä¿¡æ¯ä¼ ç»™ç”¨æˆ·ç©ºé—´ç”¨æˆ·*/
+	len = sprintf(buffer, 		/*ä¿¡æ¯ç¼“å­˜*/
+		"DefaultAction:%s\n"	/*é»˜è®¤åŠ¨ä½œ*/
+		"RulesFile:%s\n"		/*è§„åˆ™æ–‡ä»¶ä½ç½®*/
+		"LogFile:%s\n"		/*æ—¥å¿—æ–‡ä»¶ä½ç½®*/
+		"RulesNumber:%d\n"	/*è§„åˆ™æ€»ä¸ªæ•°*/
+		"HitNumber:%d\n"		/*è§„åˆ™è¿è¡Œè¿‡ç¨‹å‘½ä¸­æ•°*/
+		"FireWall:%s\n",		/*é˜²ç«å¢™æ˜¯å¦ç»ˆæ­¢*/
 		(char*)sipfw_action_name[cf.DefaultAction].ptr,
 		cf.RuleFilePath,
 		cf.LogFilePath,
@@ -59,7 +59,7 @@ int SIPFW_ProcLogRead( 	char *buffer,
 		*eof = 1;
 		return 0;
 	}
-	/*½«ÈÕÖ¾Ğ´ÈëÖĞÖ¹µÄÉèÖÃ¸øÓÃ»§*/
+	/*å°†æ—¥å¿—å†™å…¥ä¸­æ­¢çš„è®¾ç½®ç»™ç”¨æˆ·*/
 	len = sprintf(buffer, "%d\n",cf.LogPause);
 	return len;
 }
@@ -68,12 +68,12 @@ ssize_t SIPFW_ProcLogWrite( struct file *filp,
 					unsigned long len, 
 					void *data )
 {
-	/*½«Êı¾İ¿½±´Èë»º³åÇø*/
+	/*å°†æ•°æ®æ‹·è´å…¥ç¼“å†²åŒº*/
 	if (copy_from_user( cookie_pot, buff, len )) 
 	{
 		return -EFAULT;
 	}
-	/*¸ñÊ½»ñÈ¡ÊäÈëÖµ*/
+	/*æ ¼å¼è·å–è¾“å…¥å€¼*/
 	sscanf(cookie_pot,"%d\n",&cf.LogPause);
 
 	return len;
@@ -92,7 +92,7 @@ int SIPFW_ProcActionRead( 	char *buffer,
 		*eof = 1;
 		return 0;
 	}
-	/*Ä¬ÈÏ¹¤×÷µÄÃû³Æ¸øÓÃ»§*/
+	/*é»˜è®¤å·¥ä½œçš„åç§°ç»™ç”¨æˆ·*/
 	len = sprintf(buffer, "%s\n",	(char*)sipfw_action_name[cf.DefaultAction].ptr);
 	return len;
 }
@@ -101,13 +101,13 @@ ssize_t SIPFW_ProcActionWrite( struct file *filp,
 					unsigned long len, 
 					void *data )
 {
-	/*»ñÈ¡ÓÃ»§Ğ´ÈëµÄÊı¾İ*/
+	/*è·å–ç”¨æˆ·å†™å…¥çš„æ•°æ®*/
 	if (copy_from_user( cookie_pot, buff, len )) 
 	{
 		return -EFAULT;
 	}
 
-	/*±È½ÏĞ´ÈëµÄ×Ö·û´®*/
+	/*æ¯”è¾ƒå†™å…¥çš„å­—ç¬¦ä¸²*/
 	if(!strcmp(cookie_pot, "ACCEPT"))
 	{
 		cf.DefaultAction = SIPFW_ACTION_ACCEPT;
@@ -150,54 +150,54 @@ ssize_t SIPFW_ProcInvalidWrite( struct file *filp,
 	return len;
 }
 
-/*PROCĞéÄâÎÄ¼ş³õÊ¼»¯º¯Êı*/
+/*PROCè™šæ‹Ÿæ–‡ä»¶åˆå§‹åŒ–å‡½æ•°*/
 int SIPFW_Proc_Init( void )
 {
 	int ret = 0;
-	/*ÉêÇëÄÚ´æ±£´æÓÃ»§Ğ´ÈëµÄÊı¾İ*/
+	/*ç”³è¯·å†…å­˜ä¿å­˜ç”¨æˆ·å†™å…¥çš„æ•°æ®*/
 	cookie_pot = (char *)vmalloc( MAX_COOKIE_LENGTH );
-	if (!cookie_pot) /*ÉêÇëÊ§°Ü*/
+	if (!cookie_pot) /*ç”³è¯·å¤±è´¥*/
 	{
 		ret = -ENOMEM;
 	} 
 	else 
 	{
-		memset( cookie_pot, 0, MAX_COOKIE_LENGTH );/*ÇåÁã»º³åÇø*/
-		sipfw_proc_dir = proc_mkdir("sipfw",  proc_net);/*ÔÚ/proc/netÏÂ½¨Á¢sipfwÄ¿Â¼*/
-		sipfw_proc_info = create_proc_entry( "information", 0644, sipfw_proc_dir );/*ĞÅÏ¢Ïî*/
-		sipfw_proc_defaultaction = create_proc_entry( "defaultaction", 0644, sipfw_proc_dir );/*Ä¬ÈÏ¶¯×÷Ïî*/
-		sipfw_proc_logpause = create_proc_entry( "logpause", 0644, sipfw_proc_dir );/*ÈÕÖ¾ÖĞÖ¹Ïî*/
-		sipfw_proc_invalid= create_proc_entry( "invalid", 0644, sipfw_proc_dir );/*·À»ğÇ½ÖĞÖ¹Ïî*/
-		if (sipfw_proc_info == NULL /*ÅĞ¶ÏÊÇ·ñ½¨Á¢³É¹¦*/
+		memset( cookie_pot, 0, MAX_COOKIE_LENGTH );/*æ¸…é›¶ç¼“å†²åŒº*/
+		sipfw_proc_dir = proc_mkdir("sipfw",  proc_net);/*åœ¨/proc/netä¸‹å»ºç«‹sipfwç›®å½•*/
+		sipfw_proc_info = create_proc_entry( "information", 0644, sipfw_proc_dir );/*ä¿¡æ¯é¡¹*/
+		sipfw_proc_defaultaction = create_proc_entry( "defaultaction", 0644, sipfw_proc_dir );/*é»˜è®¤åŠ¨ä½œé¡¹*/
+		sipfw_proc_logpause = create_proc_entry( "logpause", 0644, sipfw_proc_dir );/*æ—¥å¿—ä¸­æ­¢é¡¹*/
+		sipfw_proc_invalid= create_proc_entry( "invalid", 0644, sipfw_proc_dir );/*é˜²ç«å¢™ä¸­æ­¢é¡¹*/
+		if (sipfw_proc_info == NULL /*åˆ¤æ–­æ˜¯å¦å»ºç«‹æˆåŠŸ*/
 			|| sipfw_proc_defaultaction == NULL 
 			||sipfw_proc_logpause == NULL 
 			||sipfw_proc_invalid == NULL) 
-		{/*½øĞĞ»Ö¸´¹¤×÷*/
+		{/*è¿›è¡Œæ¢å¤å·¥ä½œ*/
 			ret = -ENOMEM;
 			vfree(cookie_pot);
 		} 
 		else 
 		{
-			sipfw_proc_info->read_proc = SIPFW_ProcInfoRead;/*ĞÅÏ¢¶Áº¯Êı*/
+			sipfw_proc_info->read_proc = SIPFW_ProcInfoRead;/*ä¿¡æ¯è¯»å‡½æ•°*/
 			sipfw_proc_info->owner = THIS_MODULE;
 
-			sipfw_proc_defaultaction->read_proc = SIPFW_ProcActionRead;/*¶¯×÷¶Áº¯Êı*/
-			sipfw_proc_defaultaction->write_proc= SIPFW_ProcActionWrite;/*¶¯×÷Ğ´º¯Êı*/
+			sipfw_proc_defaultaction->read_proc = SIPFW_ProcActionRead;/*åŠ¨ä½œè¯»å‡½æ•°*/
+			sipfw_proc_defaultaction->write_proc= SIPFW_ProcActionWrite;/*åŠ¨ä½œå†™å‡½æ•°*/
 			sipfw_proc_defaultaction->owner = THIS_MODULE;
 
-			sipfw_proc_logpause->read_proc = SIPFW_ProcLogRead;/*ÈÕÖ¾¶Áº¯Êı*/
-			sipfw_proc_logpause->write_proc= SIPFW_ProcLogWrite;/*ÈÕÖ¾Ğ´º¯Êı*/
+			sipfw_proc_logpause->read_proc = SIPFW_ProcLogRead;/*æ—¥å¿—è¯»å‡½æ•°*/
+			sipfw_proc_logpause->write_proc= SIPFW_ProcLogWrite;/*æ—¥å¿—å†™å‡½æ•°*/
 			sipfw_proc_logpause->owner = THIS_MODULE;
 
-			sipfw_proc_invalid->read_proc = SIPFW_ProcInvalidRead;/*·À»ğÇ½¶Áº¯Êı*/
-			sipfw_proc_invalid->write_proc= SIPFW_ProcInvalidWrite;/*·À»ğÇ½Ğ´º¯Êı*/
+			sipfw_proc_invalid->read_proc = SIPFW_ProcInvalidRead;/*é˜²ç«å¢™è¯»å‡½æ•°*/
+			sipfw_proc_invalid->write_proc= SIPFW_ProcInvalidWrite;/*é˜²ç«å¢™å†™å‡½æ•°*/
 			sipfw_proc_invalid->owner = THIS_MODULE;
 		}
 	}
 	return ret;
 }
 
-/*PROCĞéÄâÎÄ¼şÇåÀíº¯Êı*/
+/*PROCè™šæ‹Ÿæ–‡ä»¶æ¸…ç†å‡½æ•°*/
 void SIPFW_Proc_CleanUp( void )
 {
 	remove_proc_entry("defaultaction", sipfw_proc_dir);
@@ -208,4 +208,3 @@ void SIPFW_Proc_CleanUp( void )
 	
 	vfree(cookie_pot);
 }
-

@@ -1,5 +1,5 @@
 ########Makefile for Simple IP FireWall##############
-######### test On Debian 4.0rc3 ##############
+
 
 
 sipfw_module-objs := sipfw_k.o sipfw_k_file.o sipfw_k_proc.o sipfw_k_nl.o sipfw_k_common.o

@@ -82,12 +82,12 @@ struct tm
 #define NL_SIPFW      31
 struct icgmp_flag		/*ICMP/IGMP*/
 {
-	__u8	valid;		/*ÓĞĞ§*/
-	__u8	type;		/*ÀàĞÍ*/
-	__u8	code;		/*´úÂë*/
+	__u8	valid;		/*æœ‰æ•ˆ*/
+	__u8	type;		/*ç±»å‹*/
+	__u8	code;		/*ä»£ç */
 };
 
-struct tcp_flag			/*TCPÑ¡Ïî*/
+struct tcp_flag			/*TCPé€‰é¡¹*/
 {
 	__u16	res1:4,
 			doff:4,
@@ -99,39 +99,39 @@ struct tcp_flag			/*TCPÑ¡Ïî*/
 			urg:1,
 			ece:1,
 			cwr:1;
-	__u8	valid;		/*ÓĞĞ§*/
+	__u8	valid;		/*æœ‰æ•ˆ*/
 };
 
-union addtion				/*¸½¼ÓÏî*/
+union addtion				/*é™„åŠ é¡¹*/
 {
 	__u32 			valid;
 	struct icgmp_flag 	icgmp;
 	struct tcp_flag	tcp;
 };
 struct sipfw_rules{
-	int		chain;				/*Á´*/
-	__be32	source;				/*Ô´µØÖ·*/
-	__be32	dest;				/*Ä¿µÄµØÖ·*/
+	int		chain;				/*é“¾*/
+	__be32	source;				/*æºåœ°å€*/
+	__be32	dest;				/*ç›®çš„åœ°å€*/
 
-	__be16	sport;				/*Ô´¶Ë¿Ú*/
-	__be16	dport;				/*Ä¿µÄ¶Ë¿Ú*/
-	__u8	protocol;			/*Ğ­ÒéÀàĞÍ*/
-	int		action;				/*¶¯×÷*/
-	__u8	ifname[8];			/*ÍøÂç½Ó¿Ú*/
+	__be16	sport;				/*æºç«¯å£*/
+	__be16	dport;				/*ç›®çš„ç«¯å£*/
+	__u8	protocol;			/*åè®®ç±»å‹*/
+	int		action;				/*åŠ¨ä½œ*/
+	__u8	ifname[8];			/*ç½‘ç»œæ¥å£*/
 	union addtion addtion;
 #ifdef __KERNEL__
-	struct sipfw_rules* next;		/*ÏÂÒ»¸ö*/
+	struct sipfw_rules* next;		/*ä¸‹ä¸€ä¸ª*/
 #endif
 };
 
 enum{
-	SIPFW_CMD_INSERT 		= 0,		/*Ïò¹æÔòÁ´ÖĞ²åÈëĞÂ¹æÔò*/
-	SIPFW_CMD_DELETE ,			/*´Ó¹æÔòÁ´ÖĞÉ¾³ıÄ³¹æÔò*/
-	SIPFW_CMD_APPEND,			/*½«ĞÂ¹æÔò¼Óµ½¹æÔòÁ´Ä©Î²*/
-	SIPFW_CMD_LIST,				/*ÁĞ³ö¹æÔòÁ´ÖĞµÄ¹æÔò*/
-	SIPFW_CMD_FLUSH,				/*Çå¿Õ¹æÔò*/
-	SIPFW_CMD_REPLACE,			/*¸ü»»Ä³¸ö¹æÔò*/
-	SIPFW_CMD_NUM 	= 6,			/*ÃüÁîµÄ¸öÊı*/
+	SIPFW_CMD_INSERT 		= 0,		/*å‘è§„åˆ™é“¾ä¸­æ’å…¥æ–°è§„åˆ™*/
+	SIPFW_CMD_DELETE ,			/*ä»è§„åˆ™é“¾ä¸­åˆ é™¤æŸè§„åˆ™*/
+	SIPFW_CMD_APPEND,			/*å°†æ–°è§„åˆ™åŠ åˆ°è§„åˆ™é“¾æœ«å°¾*/
+	SIPFW_CMD_LIST,				/*åˆ—å‡ºè§„åˆ™é“¾ä¸­çš„è§„åˆ™*/
+	SIPFW_CMD_FLUSH,				/*æ¸…ç©ºè§„åˆ™*/
+	SIPFW_CMD_REPLACE,			/*æ›´æ¢æŸä¸ªè§„åˆ™*/
+	SIPFW_CMD_NUM 	= 6,			/*å‘½ä»¤çš„ä¸ªæ•°*/
 
 	SIPFW_ACTION_DROP = 0,		/*NF_DROP*/
 	SIPFW_ACTION_ACCEPT = 1,		/*NF_ACCEPT*/
@@ -143,45 +143,45 @@ enum{
 	
 	SIPFW_ACTION_NUM = 2,
 
-	SIPFW_CHAIN_INPUT = 0,			/*INPUTÁ´*/
-	SIPFW_CHAIN_OUTPUT,			/*OUTPUTÁ´*/
-	SIPFW_CHAIN_FORWARD,			/*×ª·¢Á´*/
+	SIPFW_CHAIN_INPUT = 0,			/*INPUTé“¾*/
+	SIPFW_CHAIN_OUTPUT,			/*OUTPUTé“¾*/
+	SIPFW_CHAIN_FORWARD,			/*è½¬å‘é“¾*/
 	SIPFW_CHAIN_NUM,
-	SIPFW_CHAIN_ALL=3,				/*ËùÓĞÁ´*/
+	SIPFW_CHAIN_ALL=3,				/*æ‰€æœ‰é“¾*/
 
-	SIPFW_OPT_CHAIN,				/*Á´Ñ¡Ïî*/
-	SIPFW_OPT_IP,					/*IPÑ¡Ïî*/
-	SIPFW_OPT_PORT,				/*¶Ë¿ÚÑ¡Ïî*/
-	SIPFW_OPT_PROTOCOL,			/*Ğ­ÒéÑ¡Ïî*/
-	SIPFW_OPT_STR,					/*×Ö·û´®Ñ¡Ïî*/
-	SIPFW_OPT_ACTION				/*¶¯×÷Ñ¡Ïî*/
+	SIPFW_OPT_CHAIN,				/*é“¾é€‰é¡¹*/
+	SIPFW_OPT_IP,					/*IPé€‰é¡¹*/
+	SIPFW_OPT_PORT,				/*ç«¯å£é€‰é¡¹*/
+	SIPFW_OPT_PROTOCOL,			/*åè®®é€‰é¡¹*/
+	SIPFW_OPT_STR,					/*å­—ç¬¦ä¸²é€‰é¡¹*/
+	SIPFW_OPT_ACTION				/*åŠ¨ä½œé€‰é¡¹*/
 };
 
-typedef struct vec {					/*ÏòÁ¿½á¹¹¶¨Òå*/
-	void *ptr;						/*×Ö·û´®*/
-	unsigned long len;					/*³¤¶È*/
+typedef struct vec {					/*å‘é‡ç»“æ„å®šä¹‰*/
+	void *ptr;						/*å­—ç¬¦ä¸²*/
+	unsigned long len;					/*é•¿åº¦*/
 	int	value;
 }vec;
 
-union sipfw_variant {				/*±äÁ¿Ã¶¾ÙÀàĞÍ*/
-	char			v_str[8];			/*×Ö·û´®*/
-	int			v_int;				/*·ûºÅÕûĞÍ*/
-	unsigned int	v_uint;				/*ÎŞ·ûºÅÕûĞÍ*/
-	time_t		v_time;				/*Ê±¼äÀàĞÍ*/
-	struct vec	v_vec;				/*ÏòÁ¿ÀàĞÍ*/
+union sipfw_variant {				/*å˜é‡æšä¸¾ç±»å‹*/
+	char			v_str[8];			/*å­—ç¬¦ä¸²*/
+	int			v_int;				/*ç¬¦å·æ•´å‹*/
+	unsigned int	v_uint;				/*æ— ç¬¦å·æ•´å‹*/
+	time_t		v_time;				/*æ—¶é—´ç±»å‹*/
+	struct vec	v_vec;				/*å‘é‡ç±»å‹*/
 };
 struct sipfw_cmd_opts {
-	union sipfw_variant	command;	/*ÃüÁî*/
-	union sipfw_variant	source;		/*Ô´µØÖ·*/
-	union sipfw_variant	dest;		/*Ä¿µÄµØÖ·*/
-	union sipfw_variant	sport;		/*Ô´¶Ë¿Ú*/
-	union sipfw_variant	dport;		/*Ä¿µÄ¶Ë¿Ú*/
-	union sipfw_variant	protocol;	/*Ğ­ÒéÀàĞÍ*/
-	union sipfw_variant	chain;		/*Á´*/
-	union sipfw_variant	ifname;		/*ÍøÂç½Ó¿Ú*/
-	union sipfw_variant	action;		/*¶¯×÷*/
-	union addtion 		addtion;		/*¸½¼şÏî*/
-	union sipfw_variant	number;		/*Ôö¼Ó»òÕßÉ¾³ıµÄĞòºÅ*/
+	union sipfw_variant	command;	/*å‘½ä»¤*/
+	union sipfw_variant	source;		/*æºåœ°å€*/
+	union sipfw_variant	dest;		/*ç›®çš„åœ°å€*/
+	union sipfw_variant	sport;		/*æºç«¯å£*/
+	union sipfw_variant	dport;		/*ç›®çš„ç«¯å£*/
+	union sipfw_variant	protocol;	/*åè®®ç±»å‹*/
+	union sipfw_variant	chain;		/*é“¾*/
+	union sipfw_variant	ifname;		/*ç½‘ç»œæ¥å£*/
+	union sipfw_variant	action;		/*åŠ¨ä½œ*/
+	union addtion 		addtion;		/*é™„ä»¶é¡¹*/
+	union sipfw_variant	number;		/*å¢åŠ æˆ–è€…åˆ é™¤çš„åºå·*/
 };
 
 	

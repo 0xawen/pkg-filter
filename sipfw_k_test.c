@@ -147,37 +147,37 @@ struct sipfw_rules{
 	struct sipfw_rules* next;
 };
 #endif
-/*¡¾#|Ä¿±êÁ´ ¶¯×÷ Ô´IP Ô´¶Ë¿Ú Ä¿µÄIP Ä¿µÄ¶Ë¿Ú Ğ­ÒéÀàĞÍ ÍøÂç½Ó¿Ú¡¿*/
+/*ã€#|ç›®æ ‡é“¾ åŠ¨ä½œ æºIP æºç«¯å£ ç›®çš„IP ç›®çš„ç«¯å£ åè®®ç±»å‹ ç½‘ç»œæ¥å£ã€‘*/
 pack_rule(struct sipfw_rules *rule, char *buff, int chain)
 {
 
 	sprintf(buff, 
-		"%s "							/*Ä¿±êÁ´*/
-		"%s "							/*¶¯×÷*/
-		"%d.%d.%d.%d "					/*Ô´IP*/
-		"%d "							/*Ô´¶Ë¿Ú*/
-		"%d.%d.%d.%d "					/*Ä¿µÄIP*/
-		"%d "							/*Ä¿µÄ¶Ë¿Ú*/
-		"%d "							/*Ğ­ÒéÀàĞÍ*/
-		"%s "							/*ÍøÂç½Ó¿Ú*/
-		chain_name[chain].ptr,			/*Ä¿±êÁ´*/
-		action_name[rule->policy].ptr,	/*¶¯×÷*/
-		(rule->saddr&0xFF000000)>>24,	/*Ô´IPµÚ1¶Î*/
-		(rule->saddr&0x00FF0000)>>16,	/*Ô´IPµÚ2¶Î*/
-		(rule->saddr&0x0000FF00)>>8,		/*Ô´IPµÚ3¶Î*/
-		(rule->saddr&0x000000FF)>>0,		/*Ô´IPµÚ4¶Î*/
-		rule->sport,						/*Ô´¶Ë¿Ú*/
-		(rule->daddr&0xFF000000)>>24,	/*Ä¿µÄIPµÚ1¶Î*/
-		(rule->daddr&0xFF000000)>>16,	/*Ä¿µÄIPµÚ2¶Î*/
-		(rule->daddr&0xFF000000)>>8,		/*Ä¿µÄIPµÚ3¶Î*/
-		(rule->daddr&0xFF000000)>>0,		/*Ä¿µÄIPµÚ4¶Î*/
-		rule->dport,						/*Ä¿µÄ¶Ë¿Ú*/
-		rule->protocol,					/*Ğ­ÒéÀàĞÍ*/
-		rule->ifname						/*ÍøÂç½Ó¿Ú*/
+		"%s "							/*ç›®æ ‡é“¾*/
+		"%s "							/*åŠ¨ä½œ*/
+		"%d.%d.%d.%d "					/*æºIP*/
+		"%d "							/*æºç«¯å£*/
+		"%d.%d.%d.%d "					/*ç›®çš„IP*/
+		"%d "							/*ç›®çš„ç«¯å£*/
+		"%d "							/*åè®®ç±»å‹*/
+		"%s "							/*ç½‘ç»œæ¥å£*/
+		chain_name[chain].ptr,			/*ç›®æ ‡é“¾*/
+		action_name[rule->policy].ptr,	/*åŠ¨ä½œ*/
+		(rule->saddr&0xFF000000)>>24,	/*æºIPç¬¬1æ®µ*/
+		(rule->saddr&0x00FF0000)>>16,	/*æºIPç¬¬2æ®µ*/
+		(rule->saddr&0x0000FF00)>>8,		/*æºIPç¬¬3æ®µ*/
+		(rule->saddr&0x000000FF)>>0,		/*æºIPç¬¬4æ®µ*/
+		rule->sport,						/*æºç«¯å£*/
+		(rule->daddr&0xFF000000)>>24,	/*ç›®çš„IPç¬¬1æ®µ*/
+		(rule->daddr&0xFF000000)>>16,	/*ç›®çš„IPç¬¬2æ®µ*/
+		(rule->daddr&0xFF000000)>>8,		/*ç›®çš„IPç¬¬3æ®µ*/
+		(rule->daddr&0xFF000000)>>0,		/*ç›®çš„IPç¬¬4æ®µ*/
+		rule->dport,						/*ç›®çš„ç«¯å£*/
+		rule->protocol,					/*åè®®ç±»å‹*/
+		rule->ifname						/*ç½‘ç»œæ¥å£*/
 	
 		);
 }
-/*¡¾#|Ä¿±êÁ´ ¶¯×÷ Ô´IP Ô´¶Ë¿Ú Ä¿µÄIP Ä¿µÄ¶Ë¿Ú Ğ­ÒéÀàĞÍ ÍøÂç½Ó¿Ú¡¿*/
+/*ã€#|ç›®æ ‡é“¾ åŠ¨ä½œ æºIP æºç«¯å£ ç›®çš„IP ç›®çš„ç«¯å£ åè®®ç±»å‹ ç½‘ç»œæ¥å£ã€‘*/
 
 strtol(char *str)
 {
@@ -234,13 +234,13 @@ ReadRuleFile(struct file *f, struct sipfw_rules *rule )
 	char *pos = buff;
 	for( ;count > 0; count = ReadLine(f, buff, 2048),line_end=count + buff,pos = buff)
 	{
-		/*×¢ÊÍ#*/
+		/*æ³¨é‡Š#*/
 		if(*pos == '#')
 		{
 			continue;
 		}
 
-		/*Ä¿±êÁ´*/
+		/*ç›®æ ‡é“¾*/
 		for(;i<3 && !found;i++)
 		{
 			if(!strncmp(pos, chain_name[i].ptr, chain_name[i].len))
@@ -252,7 +252,7 @@ ReadRuleFile(struct file *f, struct sipfw_rules *rule )
 			}
 		}
 		
-		/*¶¯×÷*/
+		/*åŠ¨ä½œ*/
 		for(i = 0, found = 0 ; i < 2 && !found; i++)
 		{
 			if(!strncmp(pos, action_name[i].ptr, chain_name[i].len))
@@ -263,7 +263,7 @@ ReadRuleFile(struct file *f, struct sipfw_rules *rule )
 			}
 		}
 
-		/*Ô´IP */		
+		/*æºIP */		
 		for(i = 0; i<16; i++)
 		{
 			if(*(pos+i) == ' ')
@@ -275,13 +275,13 @@ ReadRuleFile(struct file *f, struct sipfw_rules *rule )
 		rule->saddr = inet_addr(pos);
 		pos += i + 1;
 		
-		/*Ô´¶Ë¿Ú*/
+		/*æºç«¯å£*/
 		rule->sport = strtol(pos);
 		for(;*pos != ' ';pos++)
 			;
 		pos++;
 		
-		/*Ä¿µÄIP */		
+		/*ç›®çš„IP */		
 		for(i = 0; i<16; i++)
 		{
 			if(*(pos+i) == ' ')
@@ -293,19 +293,19 @@ ReadRuleFile(struct file *f, struct sipfw_rules *rule )
 		rule->daddr = inet_addr(pos);
 		pos += i + 1;
 		
-		/*Ä¿µÄ¶Ë¿Ú*/
+		/*ç›®çš„ç«¯å£*/
 		rule->dport = strtol(pos);
 		for(;*pos != ' ';pos++)
 			;
 		pos++;
 		
-		/*Ğ­ÒéÀàĞÍ*/
+		/*åè®®ç±»å‹*/
 		rule->protocol = strtol(pos);
 		for(;*pos != ' ';pos++)
 			;
 		pos++;
 		
-		/*ÍøÂç½Ó¿Ú*/
+		/*ç½‘ç»œæ¥å£*/
 		strcpy(rule->ifname, pos);
 
 		rule = (struct sipfw_rules* )kmalloc(sizeof(struct sipfw_rules),GFP_KERNEL);
@@ -334,28 +334,28 @@ WriteRuleFile(void)
 		{
 			snprintf(buff, 
 				     2048,
-				     "%s "							/*Ä¿±êÁ´*/
-				     "%s "							/*¶¯×÷*/
-				     "%d.%d.%d.%d "					/*Ô´IP*/
-				     "%d "							/*Ô´¶Ë¿Ú*/
-				     "%d.%d.%d.%d "					/*Ä¿µÄIP*/
-				     "%d "							/*Ä¿µÄ¶Ë¿Ú*/
-				     "%d "							/*Ğ­ÒéÀàĞÍ*/
-				     "%s "							/*ÍøÂç½Ó¿Ú*/
-				     chain_name[chain].ptr,			/*Ä¿±êÁ´*/
-				     action_name[rule->policy].ptr,	/*¶¯×÷*/
-				     (rule->saddr&0xFF000000)>>24,	/*Ô´IPµÚ1¶Î*/
-				     (rule->saddr&0x00FF0000)>>16,	/*Ô´IPµÚ2¶Î*/
-				     (rule->saddr&0x0000FF00)>>8,		/*Ô´IPµÚ3¶Î*/
-				     (rule->saddr&0x000000FF)>>0,		/*Ô´IPµÚ4¶Î*/
-				     rule->sport,						/*Ô´¶Ë¿Ú*/
-				     (rule->daddr&0xFF000000)>>24,	/*Ä¿µÄIPµÚ1¶Î*/
-				     (rule->daddr&0xFF000000)>>16,	/*Ä¿µÄIPµÚ2¶Î*/
-				     (rule->daddr&0xFF000000)>>8,		/*Ä¿µÄIPµÚ3¶Î*/
-				     (rule->daddr&0xFF000000)>>0,		/*Ä¿µÄIPµÚ4¶Î*/
-				     rule->dport,						/*Ä¿µÄ¶Ë¿Ú*/
-				     rule->protocol,					/*Ğ­ÒéÀàĞÍ*/
-				     rule->ifname						/*ÍøÂç½Ó¿Ú*/);
+				     "%s "							/*ç›®æ ‡é“¾*/
+				     "%s "							/*åŠ¨ä½œ*/
+				     "%d.%d.%d.%d "					/*æºIP*/
+				     "%d "							/*æºç«¯å£*/
+				     "%d.%d.%d.%d "					/*ç›®çš„IP*/
+				     "%d "							/*ç›®çš„ç«¯å£*/
+				     "%d "							/*åè®®ç±»å‹*/
+				     "%s "							/*ç½‘ç»œæ¥å£*/
+				     chain_name[chain].ptr,			/*ç›®æ ‡é“¾*/
+				     action_name[rule->policy].ptr,	/*åŠ¨ä½œ*/
+				     (rule->saddr&0xFF000000)>>24,	/*æºIPç¬¬1æ®µ*/
+				     (rule->saddr&0x00FF0000)>>16,	/*æºIPç¬¬2æ®µ*/
+				     (rule->saddr&0x0000FF00)>>8,		/*æºIPç¬¬3æ®µ*/
+				     (rule->saddr&0x000000FF)>>0,		/*æºIPç¬¬4æ®µ*/
+				     rule->sport,						/*æºç«¯å£*/
+				     (rule->daddr&0xFF000000)>>24,	/*ç›®çš„IPç¬¬1æ®µ*/
+				     (rule->daddr&0xFF000000)>>16,	/*ç›®çš„IPç¬¬2æ®µ*/
+				     (rule->daddr&0xFF000000)>>8,		/*ç›®çš„IPç¬¬3æ®µ*/
+				     (rule->daddr&0xFF000000)>>0,		/*ç›®çš„IPç¬¬4æ®µ*/
+				     rule->dport,						/*ç›®çš„ç«¯å£*/
+				     rule->protocol,					/*åè®®ç±»å‹*/
+				     rule->ifname						/*ç½‘ç»œæ¥å£*/);
 			len = strlen(buff);
 			WriteLine(f, buff,  len);
 		}
@@ -372,18 +372,18 @@ struct sipfw_list
 struct sipfw_list sipfw_tables[SIPFW_CHAIN_NUM] ;
 
 /*
-* º¯ÊıÃû: 
+* å‡½æ•°å: 
 *	sipfw_table_init
-* ¹¦ÄÜ:
-*	³õÊ¼»¯¹æÔòÁĞ±í
-* ·µ»ØÖµ:
-*	0³É¹¦£¬1Ê§°Ü
+* åŠŸèƒ½:
+*	åˆå§‹åŒ–è§„åˆ™åˆ—è¡¨
+* è¿”å›å€¼:
+*	0æˆåŠŸï¼Œ1å¤±è´¥
 */
 static unsigned int sipfw_table_init(void)
 {
 	int i = 0;
 
-	/* ÉêÇëÈı¸öÁ´±íµÄÄÚ´æ */
+	/* ç”³è¯·ä¸‰ä¸ªé“¾è¡¨çš„å†…å­˜ */
 	for(i = 0; i < SIPFW_CHAIN_NUM; i++)
 	{
 		sipfw_tables[i].rule = NULL;
@@ -394,12 +394,12 @@ static unsigned int sipfw_table_init(void)
 
 
 /*
-* º¯ÊıÃû: 
+* å‡½æ•°å: 
 *	sipfw_table_destory
-* ¹¦ÄÜ:
-*	Ïú»Ù¹æÔòÁĞ±í
-* ·µ»ØÖµ:
-*	0³É¹¦£¬1Ê§°Ü
+* åŠŸèƒ½:
+*	é”€æ¯è§„åˆ™åˆ—è¡¨
+* è¿”å›å€¼:
+*	0æˆåŠŸï¼Œ1å¤±è´¥
 */
 static unsigned int sipfw_table_destory(void)
 {
@@ -427,26 +427,26 @@ static unsigned int sipfw_table_destory(void)
 }
 
 /*
-* º¯ÊıÃû: 
+* å‡½æ•°å: 
 *	sipfw_table_add
-* ¹¦ÄÜ:
-*	Ôö¼Ó¹æÔòÁĞ±í,ĞÂÔö¼ÓµÄ¹æÔòÎ»ÓÚÁ´±íµÄÍ·²¿
-*	Èç¹ûµ±Ç°Á´±íÖĞ´æÔÚÏàÍ¬µÄ¹æÔò£¬
-*	ÔÚÉ¾³ıÖ®Ç°µÄÏàÍ¬¹æÔòºóÔÙÔö¼Ó¹æÔò
-* ²ÎÊıº¬Òå:
-*	c:	Ôö¼ÓµÄ¹æÔò
-*	chain:	¹æÔòÁ´µÄÃ¶¾ÙÖµ
-* ·µ»ØÖµ:
-*	0³É¹¦£¬1Ê§°Ü
+* åŠŸèƒ½:
+*	å¢åŠ è§„åˆ™åˆ—è¡¨,æ–°å¢åŠ çš„è§„åˆ™ä½äºé“¾è¡¨çš„å¤´éƒ¨
+*	å¦‚æœå½“å‰é“¾è¡¨ä¸­å­˜åœ¨ç›¸åŒçš„è§„åˆ™ï¼Œ
+*	åœ¨åˆ é™¤ä¹‹å‰çš„ç›¸åŒè§„åˆ™åå†å¢åŠ è§„åˆ™
+* å‚æ•°å«ä¹‰:
+*	c:	å¢åŠ çš„è§„åˆ™
+*	chain:	è§„åˆ™é“¾çš„æšä¸¾å€¼
+* è¿”å›å€¼:
+*	0æˆåŠŸï¼Œ1å¤±è´¥
 */
 static unsigned int sipfw_table_add(struct sipfw_rules *c, int chain)
 {
 	struct sipfw_rules *l = NULL;
 
-	/*ÏÈÉ¾³ıÁĞ±íÖĞÏàÍ¬µÄ¹æÔò*/
+	/*å…ˆåˆ é™¤åˆ—è¡¨ä¸­ç›¸åŒçš„è§„åˆ™*/
 	sipfw_table_delete(c,chain);
 
-	/*Ôö¼ÓĞÂ¹æÔòµ½ÁĞ±íÊ×²¿*/	
+	/*å¢åŠ æ–°è§„åˆ™åˆ°åˆ—è¡¨é¦–éƒ¨*/	
 	read_lock_bh(&sipfw_tables[chain].lock);	
 	l = sipfw_tables[chain].rule;
 	c->next = l;
@@ -457,15 +457,15 @@ static unsigned int sipfw_table_add(struct sipfw_rules *c, int chain)
 }
 
 /*
-* º¯ÊıÃû: 
+* å‡½æ•°å: 
 *	sipfw_table_delete
-* ¹¦ÄÜ:
-*	É¾³ıÖ¸¶¨Á´ÖĞµÄÏàÍ¬¹æÔò
-* ²ÎÊıº¬Òå:
-*	c:	ÒªÉ¾³ıµÄ¹æÔò
-*	chain:	¹æÔòÁ´µÄÃ¶¾ÙÖµ
-* ·µ»ØÖµ:
-*	0³É¹¦£¬1Ê§°Ü
+* åŠŸèƒ½:
+*	åˆ é™¤æŒ‡å®šé“¾ä¸­çš„ç›¸åŒè§„åˆ™
+* å‚æ•°å«ä¹‰:
+*	c:	è¦åˆ é™¤çš„è§„åˆ™
+*	chain:	è§„åˆ™é“¾çš„æšä¸¾å€¼
+* è¿”å›å€¼:
+*	0æˆåŠŸï¼Œ1å¤±è´¥
 */
 static unsigned int sipfw_table_delete(struct sipfw_rules *c, int chain)
 {
@@ -848,12 +848,12 @@ ssize_t ReadLine(struct file *f, char *buf, size_t len)
 	mm_segment_t oldfs;
 	struct inode *inode;
 
-	/*ÅĞ¶ÏÊäÈë²ÎÊıµÄÕıÈ·ĞÔ*/
+	/*åˆ¤æ–­è¾“å…¥å‚æ•°çš„æ­£ç¡®æ€§*/
 	if (!f || IS_ERR(f) || !buf || len <= 0) 
 	{
 		goto out_error;
 	}
-	/*ÅĞ¶ÏÎÄ¼şÖ¸ÕëÊÇ·ñÕıÈ·*/
+	/*åˆ¤æ–­æ–‡ä»¶æŒ‡é’ˆæ˜¯å¦æ­£ç¡®*/
 	if (!f || !f->f_dentry || !f->f_dentry->d_inode)
 	{
 		goto out_error;
@@ -861,39 +861,39 @@ ssize_t ReadLine(struct file *f, char *buf, size_t len)
 
 	inode = f->f_dentry->d_inode;
 
-	/*ÅĞ¶ÏÎÄ¼şÈ¨ÏŞ*/
+	/*åˆ¤æ–­æ–‡ä»¶æƒé™*/
 	if (!(f->f_mode & FMODE_READ))
 	{
 		goto out_error;
 	}
 
-	/*ÊÇ·ñÓĞÎÄ¼ş²Ù×÷º¯Êı*/
+	/*æ˜¯å¦æœ‰æ–‡ä»¶æ“ä½œå‡½æ•°*/
 	if (f->f_op && f->f_op->read) 
 	{
-		oldfs = get_fs();			/*»ñµÃµØÖ·ÉèÖÃ*/
-		set_fs(KERNEL_DS);		/*ÉèÖÃÎªÄÚºËÄ£Ê½*/
+		oldfs = get_fs();			/*è·å¾—åœ°å€è®¾ç½®*/
+		set_fs(KERNEL_DS);		/*è®¾ç½®ä¸ºå†…æ ¸æ¨¡å¼*/
 		count = 0;
 
 		if (f->f_op->read(f, buf, 
-			1, &f->f_pos) == 0)	/*¶ÁÈ¡Êı¾İÊ§°Ü*/
+			1, &f->f_pos) == 0)	/*è¯»å–æ•°æ®å¤±è´¥*/
 		{
 			goto out;
 		}
 
-		if (*buf == EOF)			/*ÎÄ¼ş½áÊø*/
+		if (*buf == EOF)			/*æ–‡ä»¶ç»“æŸ*/
 		{
 			goto out;
 		}
 		count = 1;
-		while (*buf != EOF		/*ÎÄ¼ş½áÊø*/
-			&& *buf != '\0' 		/*¿Õ*/
-			&& *buf != '\n' 		/*»Ø³µ*/
-			&& *buf != '\r'		/*»»ĞĞ*/
-		       && count < len		/*»º³åÇøĞ´Âú*/
-		       && f->f_pos <= inode->i_size) /*ÎÄ¼ş³¬³ö³¤¶È*/
+		while (*buf != EOF		/*æ–‡ä»¶ç»“æŸ*/
+			&& *buf != '\0' 		/*ç©º*/
+			&& *buf != '\n' 		/*å›è½¦*/
+			&& *buf != '\r'		/*æ¢è¡Œ*/
+		       && count < len		/*ç¼“å†²åŒºå†™æ»¡*/
+		       && f->f_pos <= inode->i_size) /*æ–‡ä»¶è¶…å‡ºé•¿åº¦*/
 		{
-			buf 		+= 1;		/*»º³åÇøµØÖ·ÒÆ¶¯*/
-			count 	+= 1;		/*¼ÆÊıÔö¼Ó*/
+			buf 		+= 1;		/*ç¼“å†²åŒºåœ°å€ç§»åŠ¨*/
+			count 	+= 1;		/*è®¡æ•°å¢åŠ */
 			if (f->f_op->read(f, buf, 1, &f->f_pos) <= 0) 
 			{
 				count -= 1;
@@ -901,25 +901,25 @@ ssize_t ReadLine(struct file *f, char *buf, size_t len)
 			}
 		}
 	} 
-	else							/*Ã»ÓĞ²Ù×÷º¯Êı*/
+	else							/*æ²¡æœ‰æ“ä½œå‡½æ•°*/
 	{
 		goto out_error;
 	}
 
-	if (*buf == '\r' 				/*Ïû³ıÎ²²¿ÎŞÓÃ×Ö·û*/
+	if (*buf == '\r' 				/*æ¶ˆé™¤å°¾éƒ¨æ— ç”¨å­—ç¬¦*/
 		|| *buf =='\n' 
 		||*buf == EOF ) 
 	{
-		*buf = '\0';				/*ĞŞ¸ÄÎª¿Õ×Ö·û*/
-		count -= 1;				/*×Ö·ûÊı¼õ1*/
+		*buf = '\0';				/*ä¿®æ”¹ä¸ºç©ºå­—ç¬¦*/
+		count -= 1;				/*å­—ç¬¦æ•°å‡1*/
 	} 
-	else							/*Î²²¿×Ö·û²»¿ÉÌæ»»*/
+	else							/*å°¾éƒ¨å­—ç¬¦ä¸å¯æ›¿æ¢*/
 	{
-		buf += 1;				/*ÒÆ¶¯Ò»Î»*/
-		*buf = '\0';				/*ÉèÎª¿Õ×Ö·û*/
+		buf += 1;				/*ç§»åŠ¨ä¸€ä½*/
+		*buf = '\0';				/*è®¾ä¸ºç©ºå­—ç¬¦*/
 	}
 out:
-	set_fs(oldfs);					/*»Ø¸´Ô­À´µÄµØÖ·ÉèÖÃ·½Ê½*/
+	set_fs(oldfs);					/*å›å¤åŸæ¥çš„åœ°å€è®¾ç½®æ–¹å¼*/
 out_error:
 	return count;
 }
@@ -929,12 +929,12 @@ ssize_t WriteLine(struct file *f, char *buf, size_t len)
 	mm_segment_t oldfs;
 	struct inode *inode;
 
-	/*ÅĞ¶ÏÊäÈë²ÎÊıµÄÕıÈ·ĞÔ*/
+	/*åˆ¤æ–­è¾“å…¥å‚æ•°çš„æ­£ç¡®æ€§*/
 	if (!f || IS_ERR(f) || !buf || len <= 0) 
 	{
 		goto out_error;
 	}
-	/*ÅĞ¶ÏÎÄ¼şÖ¸ÕëÊÇ·ñÕıÈ·*/
+	/*åˆ¤æ–­æ–‡ä»¶æŒ‡é’ˆæ˜¯å¦æ­£ç¡®*/
 	if (!f || !f->f_dentry || !f->f_dentry->d_inode)
 	{
 		goto out_error;
@@ -942,34 +942,34 @@ ssize_t WriteLine(struct file *f, char *buf, size_t len)
 
 	inode = f->f_dentry->d_inode;
 
-	/*ÅĞ¶ÏÎÄ¼şÈ¨ÏŞÊÇ·ñ¿ÉĞ´*/
+	/*åˆ¤æ–­æ–‡ä»¶æƒé™æ˜¯å¦å¯å†™*/
 	if (!(f->f_mode & FMODE_WRITE) || !(f->f_mode & FMODE_READ) )
 	{
 		goto out_error;
 	}
 
-	/*ÊÇ·ñÓĞÎÄ¼ş²Ù×÷º¯Êı*/
+	/*æ˜¯å¦æœ‰æ–‡ä»¶æ“ä½œå‡½æ•°*/
 	if (f->f_op && f->f_op->read && f->f_op->write) 
 	{
 		f->f_pos = f->f_count;
-		oldfs = get_fs();			/*»ñµÃµØÖ·ÉèÖÃ*/
-		set_fs(KERNEL_DS);		/*ÉèÖÃÎªÄÚºËÄ£Ê½*/
+		oldfs = get_fs();			/*è·å¾—åœ°å€è®¾ç½®*/
+		set_fs(KERNEL_DS);		/*è®¾ç½®ä¸ºå†…æ ¸æ¨¡å¼*/
 		count = 0;
 
 		count = f->f_op->write(f, buf, len, &f->f_pos) ;
 
-		if (count == -1)			/*Ğ´ÈëÊı¾İÊ§°Ü*/
+		if (count == -1)			/*å†™å…¥æ•°æ®å¤±è´¥*/
 		{
 			goto out;
 		}		
 	} 
-	else							/*Ã»ÓĞ²Ù×÷º¯Êı*/
+	else							/*æ²¡æœ‰æ“ä½œå‡½æ•°*/
 	{
 		goto out_error;
 	}
 
 out:
-	set_fs(oldfs);					/*»Ø¸´Ô­À´µÄµØÖ·ÉèÖÃ·½Ê½*/
+	set_fs(oldfs);					/*å›å¤åŸæ¥çš„åœ°å€è®¾ç½®æ–¹å¼*/
 out_error:
 	return count;
 }
@@ -1187,7 +1187,7 @@ void SIPFW_Proc_CleanUp( void )
 	printk(KERN_INFO "fortune: Module unloaded.\n");
 }
 
-/*Ä£¿é³õÊ¼»¯*/
+/*æ¨¡å—åˆå§‹åŒ–*/
 static int __init sipfw_init(void)
 {
 	rwlock_init(&user_proc.lock);

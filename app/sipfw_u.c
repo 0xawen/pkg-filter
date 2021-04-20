@@ -12,26 +12,26 @@ struct packet_u
 	union response  payload;
 };
 struct packet_u message;
-struct sockaddr_nl nlsource, nldest;		/*Ô´µØÖ·ºÍÄ¿±êµØÖ·*/
-int nls = -1;							/*Ì×½Ó×ÖÎÄ¼şÃèÊö·û*/
+struct sockaddr_nl nlsource, nldest;		/*æºåœ°å€å’Œç›®æ ‡åœ°å€*/
+int nls = -1;							/*å¥—æ¥å­—æ–‡ä»¶æè¿°ç¬¦*/
 
 
-/*SIGINTĞÅºÅ½ØÈ¡º¯Êı*/
+/*SIGINTä¿¡å·æˆªå–å‡½æ•°*/
 static void sig_int(int signo)
 {
 	DBGPRINT("==>sig_int\n");
-	memset(&nldest, 0, sizeof(nldest));		/*Ä¿µÄµØÖ·*/
+	memset(&nldest, 0, sizeof(nldest));		/*ç›®çš„åœ°å€*/
 	nldest.nl_family = AF_NETLINK;			
-	nldest.nl_pid    = 0;					/*ÄÚºË*/
+	nldest.nl_pid    = 0;					/*å†…æ ¸*/
 	nldest.nl_groups = 0;
 
 	memset(&message, 0, sizeof(message));
-	message.nlmsgh.nlmsg_len 	= NLMSG_LENGTH(0);	/*ÏûÏ¢³¤¶È*/
+	message.nlmsgh.nlmsg_len 	= NLMSG_LENGTH(0);	/*æ¶ˆæ¯é•¿åº¦*/
 	message.nlmsgh.nlmsg_flags 	= 0;
-	message.nlmsgh.nlmsg_type 	= SIPFW_MSG_CLOSE;	/*¹Ø±ÕNLÌ×½Ó×Ö*/
-	message.nlmsgh.nlmsg_pid 	= getpid();			/*µ±Ç°µÄPID*/
+	message.nlmsgh.nlmsg_type 	= SIPFW_MSG_CLOSE;	/*å…³é—­NLå¥—æ¥å­—*/
+	message.nlmsgh.nlmsg_pid 	= getpid();			/*å½“å‰çš„PID*/
 
-	/*½«NLÌ×½Ó×Ö¹Ø±ÕµÄÏûÏ¢·¢ËÍ¸øÄÚºË*/
+	/*å°†NLå¥—æ¥å­—å…³é—­çš„æ¶ˆæ¯å‘é€ç»™å†…æ ¸*/
 	sendto(nls, &message, message.nlmsgh.nlmsg_len, 0, (struct sockaddr*)&nldest, sizeof(nldest));
 
 	close(nls);
@@ -43,7 +43,7 @@ static void sig_int(int signo)
 
 
 
-/*ÏÔÊ¾ÃüÁîÀàĞÍ*/
+/*æ˜¾ç¤ºå‘½ä»¤ç±»å‹*/
 int SIPFW_DisplayOpts(struct sipfw_cmd_opts *opts)
 {
 	DBGPRINT("==>SIPFW_DisplayOpts\n");
@@ -64,7 +64,7 @@ int SIPFW_DisplayOpts(struct sipfw_cmd_opts *opts)
 	DBGPRINT("<==SIPFW_DisplayOpts\n");
 }
 
-/*½âÎöÃüÁîÑ¡Ïî*/
+/*è§£æå‘½ä»¤é€‰é¡¹*/
 static int SIPFW_ParseOpt(int opt, char *str, union sipfw_variant *var)
 {
 	const struct vec *p = NULL;
@@ -76,9 +76,9 @@ static int SIPFW_ParseOpt(int opt, char *str, union sipfw_variant *var)
 	DBGPRINT("==>SIPFW_ParseOpt\n");
 	switch(opt)
 	{
-		case SIPFW_OPT_CHAIN:/*Á´Ãû³Æ*/
+		case SIPFW_OPT_CHAIN:/*é“¾åç§°*/
 			if(str){				
-				for(i = 0;i<SIPFW_CHAIN_NUM;i++){/*±éÀúÁ´²éÕÒÆ¥ÅäÏî*/
+				for(i = 0;i<SIPFW_CHAIN_NUM;i++){/*éå†é“¾æŸ¥æ‰¾åŒ¹é…é¡¹*/
 					if(!strncmp(str, sipfw_chain_name[i].ptr, sipfw_chain_name[i].len)){
 						chain = i;
 						break;
@@ -87,9 +87,9 @@ static int SIPFW_ParseOpt(int opt, char *str, union sipfw_variant *var)
 			}
 			var->v_uint = chain;
 			break;
-		case SIPFW_OPT_ACTION:/*¶¯×÷Ãû³ÆÆ¥Åä*/
+		case SIPFW_OPT_ACTION:/*åŠ¨ä½œåç§°åŒ¹é…*/
 			if(str)	{				
-				for(i = 0;i<SIPFW_ACTION_NUM;i++){/*²éÕÒ¶¯×÷Ãû³Æ²¢Æ¥Åä*/				
+				for(i = 0;i<SIPFW_ACTION_NUM;i++){/*æŸ¥æ‰¾åŠ¨ä½œåç§°å¹¶åŒ¹é…*/				
 					if(!strncmp(str, sipfw_action_name[i].ptr, sipfw_action_name[i].len))	{
 						action = i;
 						break;
@@ -98,21 +98,21 @@ static int SIPFW_ParseOpt(int opt, char *str, union sipfw_variant *var)
 			}
 			var->v_uint = action;
 			break;
-		case SIPFW_OPT_IP:/*½«×Ö·û´®×ªÎªÍøÂç×Ö½ÚĞò*/
+		case SIPFW_OPT_IP:/*å°†å­—ç¬¦ä¸²è½¬ä¸ºç½‘ç»œå­—èŠ‚åº*/
 			if(str)
 				ip = inet_addr(str);
 
 			var->v_uint = ip;
 			break;
 			
-		case SIPFW_OPT_PORT:/*½«×Ö·û´®ÀàĞÍ×ªÎªÍøÂçĞò*/
+		case SIPFW_OPT_PORT:/*å°†å­—ç¬¦ä¸²ç±»å‹è½¬ä¸ºç½‘ç»œåº*/
 			if(str){
 				port = htons(strtoul(str, NULL, 10));
 			}
 			var->v_uint = port;
 			break;
 			
-		case SIPFW_OPT_PROTOCOL:/*½«Ğ­ÒéµÄÃû³Æ×ªÎªÖµ*/
+		case SIPFW_OPT_PROTOCOL:/*å°†åè®®çš„åç§°è½¬ä¸ºå€¼*/
 			if(str){
 				for(p=sipfw_protocol_name + 0; p->ptr != NULL; p++){
 					if(!strncmp(p->ptr, str, p->len)){
@@ -124,7 +124,7 @@ static int SIPFW_ParseOpt(int opt, char *str, union sipfw_variant *var)
 			var->v_uint = protocol;
 			break;
 			
-		case SIPFW_OPT_STR:/*×Ö·û´®Ö±½Ó¿½±´*/
+		case SIPFW_OPT_STR:/*å­—ç¬¦ä¸²ç›´æ¥æ‹·è´*/
 			if(str){
 				int 	len = strlen(str);
 				memset(var->v_str, 0, sizeof(var->v_str));
@@ -146,38 +146,38 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 {
 	DBGPRINT("==>SIPFW_ParseCommand\n");
 	struct option longopts[] = 
-	{						/*³¤Ñ¡Ïî*/
-		{"source",	required_argument, 	NULL,	's'},	/*Ô´Ö÷»úIPµØÖ·*/
-		{"dest",        	required_argument, 	NULL,	'd'},	/*Ä¿µÄÖ÷»úIPµØÖ·*/
-		{"sport",        	required_argument, 	NULL,	'm'},	/*Ô´¶Ë¿ÚµØÖ·*/
-		{"dport",       	required_argument, 	NULL,	'n'},	/*Ä¿µÄ¶Ë¿ÚµØÖ·*/
-		{"protocol", 	required_argument, 	NULL,	'p'},	/*Ğ­ÒéÀàĞÍ*/
-		{"list",    		optional_argument, 	NULL,	'L'},	/*¹æÔòÁĞ±í*/
-		{"flush",        	optional_argument, 	NULL,	'F'},	/*Çå¿Õ¹æÔò*/
-		{"append", 	required_argument, 	NULL,	'A'},	/*Ôö¼Ó¹æÔòµ½Á´Î²²¿*/
-		{"insert",     	required_argument, 	NULL,	'I'},	/*ÏòÁ´ÖĞÔö¼Ó¹æÔò*/
-		{"delete",  	required_argument, 	NULL,	'D'},	/*É¾³ı¹æÔò*/
-		{"interface",  	required_argument, 	NULL,	'i'},	/*ÍøÂç½Ó¿Ú*/
-		{"action",  	required_argument, 	NULL,	'j'},	/*¶¯×÷*/
+	{						/*é•¿é€‰é¡¹*/
+		{"source",	required_argument, 	NULL,	's'},	/*æºä¸»æœºIPåœ°å€*/
+		{"dest",        	required_argument, 	NULL,	'd'},	/*ç›®çš„ä¸»æœºIPåœ°å€*/
+		{"sport",        	required_argument, 	NULL,	'm'},	/*æºç«¯å£åœ°å€*/
+		{"dport",       	required_argument, 	NULL,	'n'},	/*ç›®çš„ç«¯å£åœ°å€*/
+		{"protocol", 	required_argument, 	NULL,	'p'},	/*åè®®ç±»å‹*/
+		{"list",    		optional_argument, 	NULL,	'L'},	/*è§„åˆ™åˆ—è¡¨*/
+		{"flush",        	optional_argument, 	NULL,	'F'},	/*æ¸…ç©ºè§„åˆ™*/
+		{"append", 	required_argument, 	NULL,	'A'},	/*å¢åŠ è§„åˆ™åˆ°é“¾å°¾éƒ¨*/
+		{"insert",     	required_argument, 	NULL,	'I'},	/*å‘é“¾ä¸­å¢åŠ è§„åˆ™*/
+		{"delete",  	required_argument, 	NULL,	'D'},	/*åˆ é™¤è§„åˆ™*/
+		{"interface",  	required_argument, 	NULL,	'i'},	/*ç½‘ç»œæ¥å£*/
+		{"action",  	required_argument, 	NULL,	'j'},	/*åŠ¨ä½œ*/
 		{"syn",  		no_argument, 		NULL,	'y'},	/*syn*/
 		{"rst",  		no_argument, 		NULL,	'r'},	/*rst*/
 		{"acksyn",  	no_argument, 		NULL,	'k'},	/*acksyn*/
 		{"fin",  		no_argument, 		NULL,	'f'},	/*fin*/
-		{"number",	required_argument,	NULL,	'u'},	/*É¾³ı»òÕß²åÈëµÄÎ»ÖÃ*/
+		{"number",	required_argument,	NULL,	'u'},	/*åˆ é™¤æˆ–è€…æ’å…¥çš„ä½ç½®*/
 		{0, 0, 0, 0},
 	};
-	static char opts_short[] =  "s:d:m:n:p:LFA:I:D:i:j:yrkfu:";	/*¶ÌÑ¡Ïî*/
+	static char opts_short[] =  "s:d:m:n:p:LFA:I:D:i:j:yrkfu:";	/*çŸ­é€‰é¡¹*/
 
-	static char *l_opt_arg = NULL;/*²úÑ¡ÏîµÄ²ÎÊı*/
+	static char *l_opt_arg = NULL;/*äº§é€‰é¡¹çš„å‚æ•°*/
 	
-	cmd_opt->command.v_int = -1;	/*ÃüÁîÄ¬ÈÏÖµÎª-1*/
-	cmd_opt->source.v_int = 0;		/*Ô´µØÖ·Ä¬ÈÏÖµÎª0*/
-	cmd_opt->sport.v_int = 0;			/*Ô´¶Ë¿ÚÄ¬ÈÏÖµÎª0*/
-	cmd_opt->dest.v_int =0;			/*Ä¿µÄµØÖ·Ä¬ÈÏÖµÎª0*/
-	cmd_opt->dport.v_int = 0;			/*Ä¿µÄ¶Ë¿ÚÄ¬ÈÏÖµÎª0*/
-	cmd_opt->protocol.v_int = -1;		/*Ğ­ÒéÀàĞÍÄ¬ÈÏÖµÎª-1*/
-	cmd_opt->chain.v_int = -1;		/*Á´Ä¬ÈÏÖµÎª-1*/
-	cmd_opt->action.v_int= -1;		/*¶¯×÷Ä¬ÈÏÖµÎª-1*/
+	cmd_opt->command.v_int = -1;	/*å‘½ä»¤é»˜è®¤å€¼ä¸º-1*/
+	cmd_opt->source.v_int = 0;		/*æºåœ°å€é»˜è®¤å€¼ä¸º0*/
+	cmd_opt->sport.v_int = 0;			/*æºç«¯å£é»˜è®¤å€¼ä¸º0*/
+	cmd_opt->dest.v_int =0;			/*ç›®çš„åœ°å€é»˜è®¤å€¼ä¸º0*/
+	cmd_opt->dport.v_int = 0;			/*ç›®çš„ç«¯å£é»˜è®¤å€¼ä¸º0*/
+	cmd_opt->protocol.v_int = -1;		/*åè®®ç±»å‹é»˜è®¤å€¼ä¸º-1*/
+	cmd_opt->chain.v_int = -1;		/*é“¾é»˜è®¤å€¼ä¸º-1*/
+	cmd_opt->action.v_int= -1;		/*åŠ¨ä½œé»˜è®¤å€¼ä¸º-1*/
 	memset(cmd_opt->ifname.v_str, 0, 8);
 	
 		
@@ -186,7 +186,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 	{
 		switch(c)
 		{
-			case 's':		/*Ô´Ö÷»úIPµØÖ·*/
+			case 's':		/*æºä¸»æœºIPåœ°å€*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
 				{
@@ -194,7 +194,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'd':/*Ä¿µÄÖ÷»úIPµØÖ·*/
+			case 'd':/*ç›®çš„ä¸»æœºIPåœ°å€*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
 				{
@@ -202,7 +202,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'm':/*Ô´¶Ë¿ÚµØÖ·*/
+			case 'm':/*æºç«¯å£åœ°å€*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
 				{
@@ -210,7 +210,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'n':/*Ä¿µÄ¶Ë¿ÚµØÖ·*/
+			case 'n':/*ç›®çš„ç«¯å£åœ°å€*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
 				{
@@ -218,7 +218,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'p':/*Ğ­ÒéÀàĞÍ*/
+			case 'p':/*åè®®ç±»å‹*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
 				{
@@ -226,7 +226,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'L':/*¹æÔòÁĞ±í*/
+			case 'L':/*è§„åˆ™åˆ—è¡¨*/
 				cmd_opt->command.v_uint = SIPFW_CMD_LIST;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
@@ -235,7 +235,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				break;
 				
-			case 'F':/*Çå¿Õ¹æÔò*/
+			case 'F':/*æ¸…ç©ºè§„åˆ™*/
 				cmd_opt->command.v_uint = SIPFW_CMD_FLUSH;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
@@ -244,7 +244,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'A':/*Ôö¼Ó¹æÔòµ½Á´Î²²¿*/
+			case 'A':/*å¢åŠ è§„åˆ™åˆ°é“¾å°¾éƒ¨*/
 				cmd_opt->command.v_uint = SIPFW_CMD_APPEND;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
@@ -253,7 +253,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'I':/*ÏòÁ´ÖĞÔö¼Ó¹æÔò*/
+			case 'I':/*å‘é“¾ä¸­å¢åŠ è§„åˆ™*/
 				cmd_opt->command.v_uint = SIPFW_CMD_INSERT;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
@@ -262,7 +262,7 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'D':/*É¾³ı¹æÔò*/
+			case 'D':/*åˆ é™¤è§„åˆ™*/
 				cmd_opt->command.v_uint = SIPFW_CMD_DELETE;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
@@ -271,14 +271,14 @@ SIPFW_ParseCommand(int argc, char *argv[], 	struct sipfw_cmd_opts *cmd_opt)
 				}
 				
 				break;
-			case 'i':/*ÍøÂç½Ó¿Ú*/
+			case 'i':/*ç½‘ç»œæ¥å£*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
 				{
 					SIPFW_ParseOpt(SIPFW_OPT_STR, optarg, &cmd_opt->ifname);
 				}
 				break;
-			case 'j':/*¶¯×÷*/
+			case 'j':/*åŠ¨ä½œ*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':')
 				{
@@ -322,22 +322,22 @@ static int SIPFW_NLCreate(void)
 	DBGPRINT("==>SIPFW_NLCreate\n");
 	int err = -1;
 	int retval = -1;
-	nls = socket(PF_NETLINK, 				/*½¨Á¢Ì×½Ó×Ö*/
+	nls = socket(PF_NETLINK, 				/*å»ºç«‹å¥—æ¥å­—*/
 				SOCK_RAW, NL_SIPFW);
-	if(nls < 0)/*Ê§°Ü*/
+	if(nls < 0)/*å¤±è´¥*/
 	{
 		DBGPRINT("can not create a netlink socket\n");
 		retval = -1;
 		goto EXITSIPFW_NLCreate;
 	}
 
-	/*ÉèÖÃÔ´µØÖ·*/
-	memset(&nlsource, 0, sizeof(nlsource));		/*Çå¿Õ»º³åÇø*/
-	nlsource.nl_family 	= AF_NETLINK;		/*Ğ­Òé×å*/
-	nlsource.nl_pid 		= getpid();  			/*±¾½ø³ÌID*/
-	nlsource.nl_groups 	= 0;  				/*µ¥²¥*/
+	/*è®¾ç½®æºåœ°å€*/
+	memset(&nlsource, 0, sizeof(nlsource));		/*æ¸…ç©ºç¼“å†²åŒº*/
+	nlsource.nl_family 	= AF_NETLINK;		/*åè®®æ—*/
+	nlsource.nl_pid 		= getpid();  			/*æœ¬è¿›ç¨‹ID*/
+	nlsource.nl_groups 	= 0;  				/*å•æ’­*/
 
-	err = bind(nls, 							/*°ó¶¨*/
+	err = bind(nls, 							/*ç»‘å®š*/
 		(struct sockaddr*)&nlsource, sizeof(nlsource));
 	if(err == -1)
 	{
@@ -354,19 +354,19 @@ static ssize_t SIPFW_NLSend(char *buf, int len, int type)
 {
 	DBGPRINT("==>SIPFW_NLSend\n");
 	ssize_t size = -1;
-	memset(&nldest, 0, sizeof(nldest));			/*Çå¿Õ»º³åÇø*/
-	nldest.nl_family 	= AF_NETLINK;		/*Ğ­Òé×å*/
-	nldest.nl_pid 		= 0;   				/*·¢ËÍ¸øÄÚºË*/
-	nldest.nl_groups 	= 0; 				/*µ¥²¥*/
+	memset(&nldest, 0, sizeof(nldest));			/*æ¸…ç©ºç¼“å†²åŒº*/
+	nldest.nl_family 	= AF_NETLINK;		/*åè®®æ—*/
+	nldest.nl_pid 		= 0;   				/*å‘é€ç»™å†…æ ¸*/
+	nldest.nl_groups 	= 0; 				/*å•æ’­*/
 
-	/* Ìî³änetlinkÏûÏ¢Í·*/
-	message.nlmsgh.nlmsg_len 	= NLMSG_LENGTH(len);/*³¤¶È*/
-	message.nlmsgh.nlmsg_pid 	= getpid();  		/*±¾½ø³ÌµÄPID*/
-	message.nlmsgh.nlmsg_flags 	= 0;				/*±êÖ¾*/
-	message.nlmsgh.nlmsg_type	= type;			/*ÀàĞÍ*/
-	/* Ìî³änetlinkÏûÏ¢µÄ¸ºÔØ*/
+	/* å¡«å……netlinkæ¶ˆæ¯å¤´*/
+	message.nlmsgh.nlmsg_len 	= NLMSG_LENGTH(len);/*é•¿åº¦*/
+	message.nlmsgh.nlmsg_pid 	= getpid();  		/*æœ¬è¿›ç¨‹çš„PID*/
+	message.nlmsgh.nlmsg_flags 	= 0;				/*æ ‡å¿—*/
+	message.nlmsgh.nlmsg_type	= type;			/*ç±»å‹*/
+	/* å¡«å……netlinkæ¶ˆæ¯çš„è´Ÿè½½*/
 	memcpy(NLMSG_DATA(&message.nlmsgh), buf, len);
-	/*·¢ËÍ¸øÄÚºË*/
+	/*å‘é€ç»™å†…æ ¸*/
 	size = sendto(nls,&message, message.nlmsgh.nlmsg_len, 0, (struct sockaddr*)&nldest, sizeof(nldest));
 
 	DBGPRINT("<==SIPFW_NLSend\n");
@@ -376,17 +376,17 @@ static ssize_t SIPFW_NLSend(char *buf, int len, int type)
 static ssize_t SIPFW_NLRecv(void)
 {
 	DBGPRINT("==>SIPFW_NLRecv\n");
-	/* ´ÓÄÚºË½ÓÊÕÏûÏ¢ */
+	/* ä»å†…æ ¸æ¥æ”¶æ¶ˆæ¯ */
 	int len = sizeof(nldest);
 	char *info = NULL;
 	ssize_t size = -1;
 	
 	memset(&nldest, 0, sizeof(nldest));
 	nldest.nl_family = AF_NETLINK;
-	nldest.nl_pid    = 0;				/*´ÓÄÚºË½ÓÊÕ*/
+	nldest.nl_pid    = 0;				/*ä»å†…æ ¸æ¥æ”¶*/
 	nldest.nl_groups = 0;
 	
-	size = recvfrom(nls, /*½ÓÊÕÏûÏ¢*/
+	size = recvfrom(nls, /*æ¥æ”¶æ¶ˆæ¯*/
 			&message, 
 			sizeof(message), 
 			0, 
@@ -403,18 +403,18 @@ static void SIPFW_NLClose(void)
 	DBGPRINT("<==SIPFW_NLClose\n");
 }
 
-/*½ÓÊÕ²¢ÏÔÊ¾¹æÔò,¹æÔòÁĞ±íÃ¿´Î½ö½ö·¢ËÍÒ»¸ö
-*	countÎª¹æÔòµÄ¸öÊı
+/*æ¥æ”¶å¹¶æ˜¾ç¤ºè§„åˆ™,è§„åˆ™åˆ—è¡¨æ¯æ¬¡ä»…ä»…å‘é€ä¸€ä¸ª
+*	countä¸ºè§„åˆ™çš„ä¸ªæ•°
 */
 static ssize_t SIPFW_NLRecvRuleList(unsigned int count)
 {
 	DBGPRINT("==>SIPFW_NLRecvRuleList\n");
 	int i = -1;
 	int size = -1;
-	unsigned int sip = 0, dip = 0;		/*Ô­IPµØÖ·ºÍÄ¿µÄIPµØÖ·*/
-	unsigned short sport = 0, dport = 0;	/*Ô´¶Ë¿ÚºÍÄ¿µÄ¶Ë¿Ú*/
-	unsigned char proto = 0;			/*Ğ­ÒéÀàĞÍ*/
-	int action = 0;			/*¶¯×÷ÀàĞÍ*/
+	unsigned int sip = 0, dip = 0;		/*åŸIPåœ°å€å’Œç›®çš„IPåœ°å€*/
+	unsigned short sport = 0, dport = 0;	/*æºç«¯å£å’Œç›®çš„ç«¯å£*/
+	unsigned char proto = 0;			/*åè®®ç±»å‹*/
+	int action = 0;			/*åŠ¨ä½œç±»å‹*/
 	unsigned char chain_org = SIPFW_CHAIN_NUM, chain;
 	struct sipfw_rules *rules = NULL;
 	struct in_addr source, dest;
@@ -422,25 +422,25 @@ static ssize_t SIPFW_NLRecvRuleList(unsigned int count)
 
 	for(i=0; i< count; i++)
 	{
-		size = SIPFW_NLRecv();		/*½ÓÊÕÄÚºË·¢ËÍµÄÊı¾İ*/
+		size = SIPFW_NLRecv();		/*æ¥æ”¶å†…æ ¸å‘é€çš„æ•°æ®*/
 		if(size < 0)
 		{
 			continue;
 		}
 		
 		rules = &message.payload.rule;
-		action = rules->action;		/*¶¯×÷*/
-		source.s_addr = rules->source;/*Ô´IP*/
-		sport = ntohs(rules->sport);		/*Ô´¶Ë¿Ú*/
-		dest.s_addr = rules->dest;	/*Ä¿µÄIP*/
-		dport = ntohs(rules->dport);		/*Ä¿µÄ¶Ë¿Ú*/
-		proto = rules->protocol;	/*Ğ­ÒéÀàĞÍ*/
-		chain = rules->chain;		/*Á´*/
-		if(chain != chain_org)		/*Á´·¢Éú±ä»¯*/
+		action = rules->action;		/*åŠ¨ä½œ*/
+		source.s_addr = rules->source;/*æºIP*/
+		sport = ntohs(rules->sport);		/*æºç«¯å£*/
+		dest.s_addr = rules->dest;	/*ç›®çš„IP*/
+		dport = ntohs(rules->dport);		/*ç›®çš„ç«¯å£*/
+		proto = rules->protocol;	/*åè®®ç±»å‹*/
+		chain = rules->chain;		/*é“¾*/
+		if(chain != chain_org)		/*é“¾å‘ç”Ÿå˜åŒ–*/
 		{
-			chain_org = chain;		/*ĞŞ¸ÄÁ´*/
+			chain_org = chain;		/*ä¿®æ”¹é“¾*/
 
-			printf("CHAIN %s Rules\n"	/*´òÓ¡±êÌâÀ¸*/
+			printf("CHAIN %s Rules\n"	/*æ‰“å°æ ‡é¢˜æ */
 				"ACTION"
 				"\tSOURCE"
 				"\tSPORT"
@@ -451,15 +451,15 @@ static ssize_t SIPFW_NLRecvRuleList(unsigned int count)
 				sipfw_chain_name[chain_org]);
 		}
 
-		if((action>-1 && action <3))/*¶¯×÷Ãû³Æ*/
+		if((action>-1 && action <3))/*åŠ¨ä½œåç§°*/
 			printf("%s", sipfw_action_name[action]);
 		else
 			printf("%s", "NOTSET");
-		printf("\t%s", inet_ntoa(source));/*Ô´IPµØÖ·*/
-		printf("\t%d", sport);/*Ô´¶Ë¿Ú*/
-		printf("\t%s", inet_ntoa(dest));/*Ä¿µÄIP*/
-		printf("\t%d", dport);/*Ä¿µÄ¶Ë¿Ú*/
-		printf("\t%d\n", proto);/*Ğ­ÒéÀàĞÍ*/
+		printf("\t%s", inet_ntoa(source));/*æºIPåœ°å€*/
+		printf("\t%d", sport);/*æºç«¯å£*/
+		printf("\t%s", inet_ntoa(dest));/*ç›®çš„IP*/
+		printf("\t%d", dport);/*ç›®çš„ç«¯å£*/
+		printf("\t%d\n", proto);/*åè®®ç±»å‹*/
 		
 
 	}
@@ -524,7 +524,7 @@ int main(int argc, char *argv[])
 	struct sipfw_cmd_opts cmd_opt;
 	ssize_t size ;
 
-	signal(SIGINT, sig_int);				/*¹Ò½ÓÖĞ¶ÏĞÅºÅ*/
+	signal(SIGINT, sig_int);				/*æŒ‚æ¥ä¸­æ–­ä¿¡å·*/
 	cmd_opt.action.v_int = -1;
 	cmd_opt.addtion.valid = 0;
 	cmd_opt.chain.v_int  = -1;
@@ -536,38 +536,37 @@ int main(int argc, char *argv[])
 	cmd_opt.source.v_uint = 0;
 	cmd_opt.sport.v_int = -1;
 
-	SIPFW_ParseCommand(argc, argv, &cmd_opt);	/*½âÎöÃüÁî¸ñÊ½*/
+	SIPFW_ParseCommand(argc, argv, &cmd_opt);	/*è§£æå‘½ä»¤æ ¼å¼*/
 	if(SIPFW_JudgeCommand(&cmd_opt))
 		return -1;
-	SIPFW_DisplayOpts(&cmd_opt);				/*ÏÔÊ¾½âÎö½á¹û*/
-	SIPFW_NLCreate();							/*½¨Á¢NetLinkÌ×½Ó×Ö*/
+	SIPFW_DisplayOpts(&cmd_opt);				/*æ˜¾ç¤ºè§£æç»“æœ*/
+	SIPFW_NLCreate();							/*å»ºç«‹NetLinkå¥—æ¥å­—*/
 	
-	size = SIPFW_NLSend((char*)&cmd_opt, sizeof(cmd_opt), SIPFW_MSG_PID);/*·¢ËÍÃüÁî*/
-	if(size < 0){									/*Ê§°Ü*/	
+	size = SIPFW_NLSend((char*)&cmd_opt, sizeof(cmd_opt), SIPFW_MSG_PID);/*å‘é€å‘½ä»¤*/
+	if(size < 0){									/*å¤±è´¥*/	
 		return -1;
 	}
 
-	size = SIPFW_NLRecv();						/*½ÓÊÕÄÚºËÏìÓ¦*/
-	if(size < 0){									/*Ê§°Ü*/	
+	size = SIPFW_NLRecv();						/*æ¥æ”¶å†…æ ¸å“åº”*/
+	if(size < 0){									/*å¤±è´¥*/	
 		return -1;
 	}
 	
-	if(cmd_opt.command.v_uint == SIPFW_CMD_LIST){	/*»ñµÃ¹æÔòÁĞ±í*/		
-		unsigned int count  = 0;					/*¹æÔòÁĞ±íµÄÊı¾İÁ¿*/
+	if(cmd_opt.command.v_uint == SIPFW_CMD_LIST){	/*è·å¾—è§„åˆ™åˆ—è¡¨*/		
+		unsigned int count  = 0;					/*è§„åˆ™åˆ—è¡¨çš„æ•°æ®é‡*/
 		
 		if(size > 0){
-			count = message.payload.count;			/*¹æÔò¸öÊı*/
+			count = message.payload.count;			/*è§„åˆ™ä¸ªæ•°*/
 		}	else		{
 			return -1;
 		}
-		SIPFW_NLRecvRuleList(count);				/*½ÓÊÕ²¢ÏÔÊ¾¹æÔò*/
+		SIPFW_NLRecvRuleList(count);				/*æ¥æ”¶å¹¶æ˜¾ç¤ºè§„åˆ™*/
 	}else{
 		DBGPRINT("information:%s\n",message.payload.info_str);
 	}	
 	
-	SIPFW_NLClose();							/*¹Ø±ÕNetLinkÌ×½Ó×Ö*/
+	SIPFW_NLClose();							/*å…³é—­NetLinkå¥—æ¥å­—*/
 
 	return 0;
 }
-
 

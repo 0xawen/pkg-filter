@@ -7,69 +7,69 @@
 #include "sipfw.h"
 
 
-/* ¸ù¾İÃëÊı»ñµÃ±¾µØ ÈÕÆÚµÄ¼òµ¥³ÌĞò
-*	±¾³ÌĞòÊÇÓÃ²é±íµÄ·½·¨À´¼ÆËã
-*	2007Äêµ½2012ÄêµÄÊ±¼ä
-* ²ÎÊı:
-*	r:Ê±¼ä½á¹¹£¬ÓÃÓÚ½«¼ÆËã½á¹û´«³ö
+/* æ ¹æ®ç§’æ•°è·å¾—æœ¬åœ° æ—¥æœŸçš„ç®€å•ç¨‹åº
+*	æœ¬ç¨‹åºæ˜¯ç”¨æŸ¥è¡¨çš„æ–¹æ³•æ¥è®¡ç®—
+*	2007å¹´åˆ°2012å¹´çš„æ—¶é—´
+* å‚æ•°:
+*	r:æ—¶é—´ç»“æ„ï¼Œç”¨äºå°†è®¡ç®—ç»“æœä¼ å‡º
 */
 void SIPFW_Localtime(struct tm *r, unsigned long time)
 {
 	unsigned int year, i, days, sec;
 	__u16 *yday = NULL;
-	/* 2007Äêµ½2012ÄêÓë1970ÄêµÄÌìÊı */
+	/* 2007å¹´åˆ°2012å¹´ä¸1970å¹´çš„å¤©æ•° */
 	__u16 days_since_epoch[] = 
 	{
 		/* 2007 - 2012 */
 		13514,13879, 14245, 14610,14975, 15340, 
 	};
 
-	/*Ä³ÔÂÔÚÒ»ÄêÖĞ¿ªÊ¼µÄÌìÊı*/
+	/*æŸæœˆåœ¨ä¸€å¹´ä¸­å¼€å§‹çš„å¤©æ•°*/
 	__u16 days_since_year[] = {
 		0, 31, 59, 90, 120, 151, 181, 212, 243, 273, 304, 334,
 	};
-	/*Ä³ÔÂÔÚÒ»¸öÈóÄêÖĞ¿ªÊ¼µÄÌìÊı*/
+	/*æŸæœˆåœ¨ä¸€ä¸ªæ¶¦å¹´ä¸­å¼€å§‹çš„å¤©æ•°*/
 	__u16 days_since_leapyear[] = {
 		0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335,
 	};
-	yday = days_since_year;				/*¼ÙÉèÎªÒ»°ãÄê*/
+	yday = days_since_year;				/*å‡è®¾ä¸ºä¸€èˆ¬å¹´*/
 
-	sec = time + 3600*8;					/*¼ÓÉÏ¶«°ËÇøµÄÃëÊı*/
-	days = sec /(3600*24);					/*ÕûÌìÊı*/
-	sec =  sec % (3600*24);				/*Ò»ÌìÄÚÃëÊı*/
-	r->hour = sec / 3600;					/*Ğ¡Ê±Êı*/
-	sec = sec % 3600;						/*Ò»Ğ¡Ê±ÄÚÃëÊı*/
-	r->min = sec / 60;					/*·ÖÖÓÊı*/
-	r->sec = sec % 60;					/*Ò»·ÖÖÓÄÚÃëÊı*/
+	sec = time + 3600*8;					/*åŠ ä¸Šä¸œå…«åŒºçš„ç§’æ•°*/
+	days = sec /(3600*24);					/*æ•´å¤©æ•°*/
+	sec =  sec % (3600*24);				/*ä¸€å¤©å†…ç§’æ•°*/
+	r->hour = sec / 3600;					/*å°æ—¶æ•°*/
+	sec = sec % 3600;						/*ä¸€å°æ—¶å†…ç§’æ•°*/
+	r->min = sec / 60;					/*åˆ†é’Ÿæ•°*/
+	r->sec = sec % 60;					/*ä¸€åˆ†é’Ÿå†…ç§’æ•°*/
 
-	/*²é±í¼ÆËã1970¿ªÊ¼µÄÄêÊı*/
+	/*æŸ¥è¡¨è®¡ç®—1970å¼€å§‹çš„å¹´æ•°*/
 	for(i= 0, year = 2007; days_since_epoch[i]<days; i++,year++)
 		;
-	year--;i--;							/*»Ø¸´ÕıÈ·µÄÊıÖµ*/
+	year--;i--;							/*å›å¤æ­£ç¡®çš„æ•°å€¼*/
 	
-	days -= days_since_epoch[i];			/*ÄêÄÚÌìÊı*/
+	days -= days_since_epoch[i];			/*å¹´å†…å¤©æ•°*/
 	
 	if (year% 4 == 0 && (year % 100 != 0 || year % 400 == 0)) 
 	{
-		yday = days_since_leapyear;		/*ÈòÄê*/
+		yday = days_since_leapyear;		/*é—°å¹´*/
 	}
 	
 
-	for (i=0; i < 12 && days > yday[i]; i++)	/*²éÕÒÔÂ·İ*/
+	for (i=0; i < 12 && days > yday[i]; i++)	/*æŸ¥æ‰¾æœˆä»½*/
 		;
-	r->year = year;						/*ÄêÊı*/
-	r->mon    = i ;						/*ÔÂÊı*/
-	r->mday = days -yday[i-1];			/*ÔÂÖĞÈÕÆÚ*/
+	r->year = year;						/*å¹´æ•°*/
+	r->mon    = i ;						/*æœˆæ•°*/
+	r->mday = days -yday[i-1];			/*æœˆä¸­æ—¥æœŸ*/
 	
 	return ;
 }
 
-/*ÅĞ¶ÏÍøÂçÊı¾İºÍ¹æÔòµÄ¸½¼ÓÏîÊÇ·ñÆ¥Åä£¬
-*	°üº¬¶Ë¿ÚºÅ¡¢TCPµÄ±êÖ¾Î»¡¢ICMP/IGMPÀàĞÍ´úÂë
-* ²ÎÊı:
-*	iphÎªIPÍ·²¿Ö¸Õë
-*	dataÎªIPµÄ¸ºÔØ
-*	rÎª¹æÔò
+/*åˆ¤æ–­ç½‘ç»œæ•°æ®å’Œè§„åˆ™çš„é™„åŠ é¡¹æ˜¯å¦åŒ¹é…ï¼Œ
+*	åŒ…å«ç«¯å£å·ã€TCPçš„æ ‡å¿—ä½ã€ICMP/IGMPç±»å‹ä»£ç 
+* å‚æ•°:
+*	iphä¸ºIPå¤´éƒ¨æŒ‡é’ˆ
+*	dataä¸ºIPçš„è´Ÿè½½
+*	rä¸ºè§„åˆ™
 */
 static int SIPFW_IsAddtionMatch(struct iphdr *iph,  void *data, struct sipfw_rules *r)
 {
@@ -79,32 +79,32 @@ static int SIPFW_IsAddtionMatch(struct iphdr *iph,  void *data, struct sipfw_rul
 
 	switch(iph->protocol)
 	{
-		case IPPROTO_TCP:/*TCPĞ­ÒéÖĞÅĞ¶Ï¶Ë¿ÚºÍ±êÖ¾Î»*/
+		case IPPROTO_TCP:/*TCPåè®®ä¸­åˆ¤æ–­ç«¯å£å’Œæ ‡å¿—ä½*/
 		{
 			struct tcphdr *tcph = (struct tcphdr *)data;
-			if( (tcph->source == r->sport || r->sport == 0)/*¶Ë¿Ú*/
+			if( (tcph->source == r->sport || r->sport == 0)/*ç«¯å£*/
 				&&(tcph->dest == r->dport || r->dport == 0))
 			{
-				if(!r->addtion.valid)/*¹æÔòÖĞ²»´æÔÚ±êÖ¾Î»*/
+				if(!r->addtion.valid)/*è§„åˆ™ä¸­ä¸å­˜åœ¨æ ‡å¿—ä½*/
 				{
-					found = 1;/*Æ¥Åä*/
+					found = 1;/*åŒ¹é…*/
 				}
-				else	/*´æÔÚ±êÖ¾Î»*/
+				else	/*å­˜åœ¨æ ‡å¿—ä½*/
 				{
-					/*ÅĞ¶ÏTCPÍ·²¿µÄ±êÖ¾Î»*/
+					/*åˆ¤æ–­TCPå¤´éƒ¨çš„æ ‡å¿—ä½*/
 					struct tcp_flag *tcpf = &r->addtion.tcp;
 					if(tcpf->ack == tcph->ack		/*ACK/SYN*/
 						&&tcpf->fin == tcph->fin	/*FIN*/
 						&&tcpf->syn == tcph->syn)	/*SYN*/
 					{
-						found = 1;/*Æ¥Åä*/
+						found = 1;/*åŒ¹é…*/
 					}
 				}
 			}
 		}
 		break;
 		
-		case IPPROTO_UDP:/*UDPĞ­ÒéÅĞ¶Ï¶Ë¿Ú*/
+		case IPPROTO_UDP:/*UDPåè®®åˆ¤æ–­ç«¯å£*/
 		{
 			struct tcphdr *udph = (struct tcphdr *)data;
 			if( (udph->source == r->sport || r->sport == 0)
@@ -115,26 +115,26 @@ static int SIPFW_IsAddtionMatch(struct iphdr *iph,  void *data, struct sipfw_rul
 		}
 		break;
 		
-		case IPPROTO_ICMP:/*ICMPÅĞ¶ÏÀàĞÍºÍ´úÂë*/		
-		case IPPROTO_IGMP:/*IGMPÅĞ¶ÏÀàĞÍºÍ´úÂë*/
+		case IPPROTO_ICMP:/*ICMPåˆ¤æ–­ç±»å‹å’Œä»£ç */		
+		case IPPROTO_IGMP:/*IGMPåˆ¤æ–­ç±»å‹å’Œä»£ç */
 		{
 			struct igmphdr *igmph = (struct igmphdr*)data;
-			if(!r->addtion.valid)/*²»´æÔÚÀàĞÍ*/
+			if(!r->addtion.valid)/*ä¸å­˜åœ¨ç±»å‹*/
 			{
 				found = 1;
 			}
-			else/*´æÔÚÀàĞÍ*/
+			else/*å­˜åœ¨ç±»å‹*/
 			{
 				struct icgmp_flag *impf = &r->addtion.icgmp;
 				if(impf->type == igmph->type && impf->code == igmph->code)
 				{
-					found = 1;/*·ûºÏ*/
+					found = 1;/*ç¬¦åˆ*/
 				}
 			}
 		}
 		break;
 		
-		default:/*ÆäËû²»·ûºÏ*/
+		default:/*å…¶ä»–ä¸ç¬¦åˆ*/
 			found = 0;
 			break;
 	}
@@ -144,48 +144,48 @@ static int SIPFW_IsAddtionMatch(struct iphdr *iph,  void *data, struct sipfw_rul
 	return found;
 }
 
-/*Æ¥ÅäÍøÂçÊı¾İºÍ¹æÔòÖĞµÄIPµØÖ·¼°Ğ­ÒéÊÇ·ñÆ¥Åä*/
+/*åŒ¹é…ç½‘ç»œæ•°æ®å’Œè§„åˆ™ä¸­çš„IPåœ°å€åŠåè®®æ˜¯å¦åŒ¹é…*/
 static int SIPFW_IsIPMatch(struct iphdr *iph, struct sipfw_rules *r)
 {
 	int found = 0;
 	DBGPRINT("==>SIPFW_IsIPMatch\n");
-	if((iph->daddr == r->dest|| r->dest == 0)/*Ä¿µÄµØÖ·*/
-		&&(iph->saddr==r->source|| r->source == 0)/*Ô´µØÖ·*/
-		&&( iph->protocol== r->protocol  ||  r->protocol == 0))/*Ğ­Òé*/
+	if((iph->daddr == r->dest|| r->dest == 0)/*ç›®çš„åœ°å€*/
+		&&(iph->saddr==r->source|| r->source == 0)/*æºåœ°å€*/
+		&&( iph->protocol== r->protocol  ||  r->protocol == 0))/*åè®®*/
 	{
-		found = 1;/*Æ¥Åä*/
+		found = 1;/*åŒ¹é…*/
 	}
 
 	DBGPRINT("<==SIPFW_IsIPMatch\n");
 	return found;
 }
 
-/*ÅĞ¶ÏÍøÂçÊı¾İºÍÒ»ÌõÁ´ÉÏµÄ¹æÔòÊÇ·ñÆ¥Åä*/
+/*åˆ¤æ–­ç½‘ç»œæ•°æ®å’Œä¸€æ¡é“¾ä¸Šçš„è§„åˆ™æ˜¯å¦åŒ¹é…*/
 struct sipfw_rules * SIPFW_IsMatch(struct sk_buff *skb,struct sipfw_rules *l)
 {
-	struct sipfw_rules *r = NULL;	/*¹æÔò*/
-	struct iphdr *iph = NULL;		/*IPÍ·²¿*/
-	void *p = NULL;				/*ÍøÂçÊı¾İ¸ºÔØ*/
-	int found = 0;				/*ÊÇ·ñÆ¥Åä*/
+	struct sipfw_rules *r = NULL;	/*è§„åˆ™*/
+	struct iphdr *iph = NULL;		/*IPå¤´éƒ¨*/
+	void *p = NULL;				/*ç½‘ç»œæ•°æ®è´Ÿè½½*/
+	int found = 0;				/*æ˜¯å¦åŒ¹é…*/
 
 	
 
-	iph = skb->nh.iph;			/*ÕÒµ½IPÍ·²¿*/
+	iph = skb->nh.iph;			/*æ‰¾åˆ°IPå¤´éƒ¨*/
 
-	p = skb->data + skb->nh.iph->ihl*4;/*¸ºÔØ²¿·Ö*/
+	p = skb->data + skb->nh.iph->ihl*4;/*è´Ÿè½½éƒ¨åˆ†*/
 
 	DBGPRINT("source IP:%x,dest:%x\n",iph->saddr,iph->daddr);
-	if(l == NULL)					/*Á´Îª¿ÕÖ±½ÓÍË³ö*/
+	if(l == NULL)					/*é“¾ä¸ºç©ºç›´æ¥é€€å‡º*/
 	{
 		goto EXITSIPFW_IsMatch;
 	}
-	for(r = l; r != NULL; r = r->next)/*ÔÚÁ´ÉÏÑ­»·Æ¥Åä¹æÔò*/
+	for(r = l; r != NULL; r = r->next)/*åœ¨é“¾ä¸Šå¾ªç¯åŒ¹é…è§„åˆ™*/
 	{
-		if(SIPFW_IsIPMatch(iph, r))/*IPÊÇ·ñÆ¥Åä*/
+		if(SIPFW_IsIPMatch(iph, r))/*IPæ˜¯å¦åŒ¹é…*/
 		{
-			if(SIPFW_IsAddtionMatch(iph,p,r))/*¸½¼ÓÊı¾İÊÇ·ñÆ¥Åä*/
+			if(SIPFW_IsAddtionMatch(iph,p,r))/*é™„åŠ æ•°æ®æ˜¯å¦åŒ¹é…*/
 			{
-				found = 1;/*Æ¥Åä*/
+				found = 1;/*åŒ¹é…*/
 				break;
 			}
 		}
@@ -195,7 +195,7 @@ EXITSIPFW_IsMatch:
 	return found?r:NULL;
 }
 
-/*Ïú»Ù¹æÔòÁ´±í£¬ÊÍ·Å×ÊÔ´*/
+/*é”€æ¯è§„åˆ™é“¾è¡¨ï¼Œé‡Šæ”¾èµ„æº*/
 int SIPFW_ListDestroy(void)
 {
 	struct sipfw_list *l = NULL;
@@ -204,26 +204,23 @@ int SIPFW_ListDestroy(void)
 	int i ;
 	DBGPRINT("==>SIPFW_ListDestroy\n");
 
-	for(i = 0;i < 3; i++)/*±éÀúÈı¸öÁ´*/
+	for(i = 0;i < 3; i++)/*éå†ä¸‰ä¸ªé“¾*/
 	{
 		
 		l = &sipfw_tables[i];
-		for(cur = l->rule; 		/*±éÀúÒ»¸öÁ´*/
+		for(cur = l->rule; 		/*éå†ä¸€ä¸ªé“¾*/
 			cur != NULL; 
 			prev = cur, cur = cur->next)
 		{
-			if(prev)	/*ÊÍ·ÅÄÚ´æ*/
+			if(prev)	/*é‡Šæ”¾å†…å­˜*/
 			{
 				kfree(prev);
 			}
 		}
-		l->rule = NULL;/*ÇåÀíÖ¸Õë*/
-		l->number = 0;/*ÇåÀíÁ´±íÄÚ¹æÔò¸öÊı*/
+		l->rule = NULL;/*æ¸…ç†æŒ‡é’ˆ*/
+		l->number = 0;/*æ¸…ç†é“¾è¡¨å†…è§„åˆ™ä¸ªæ•°*/
 	}
 
 	DBGPRINT("<==SIPFW_ListDestroy\n");
 	return 0;
 }
-
-
-

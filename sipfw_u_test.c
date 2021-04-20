@@ -92,18 +92,18 @@ struct opts_value {
 };
 
 
-static struct option opts_long[] = {						/*³¤Ñ¡Ïî*/
-	{.name = "source",    	.has_arg = 1, 		.val = 's'},	/*Ô´Ö÷»úIPµØÖ·*/
-	{.name = "dest",        	.has_arg = 1, 		.val = 'd'},	/*Ä¿µÄÖ÷»úIPµØÖ·*/
-	{.name = "sport",        	.has_arg = 1, 		.val = 'm'},	/*Ô´¶Ë¿ÚµØÖ·*/
-	{.name = "dport",       	.has_arg = 1, 		.val = 'n'},	/*Ä¿µÄ¶Ë¿ÚµØÖ·*/
-	{.name = "protocol", 	.has_arg = 2, 		.val = 'p'},	/*Ğ­ÒéÀàĞÍ*/
-	{.name = "list",    		.has_arg = 2, 		.val = 'L'},	/*¹æÔòÁĞ±í*/
-	{.name = "flush",         	.has_arg = 2, 		.val = 'F'},	/*Çå¿Õ¹æÔò*/
-	{.name = "append", 	.has_arg = 2, 		.val = 'A'},	/*Ôö¼Ó¹æÔòµ½Á´Î²²¿*/
-	{.name = "insert",     	.has_arg = 1, 		.val = 'I'},	/*ÏòÁ´ÖĞÔö¼Ó¹æÔò*/
-	{.name = "delete",  	.has_arg = 2, 		.val = 'D'},	/*É¾³ı¹æÔò*/
-	{.name = "interface",  	.has_arg = 1, 		.val = 'i'},	/*ÍøÂç½Ó¿Ú*/
+static struct option opts_long[] = {						/*é•¿é€‰é¡¹*/
+	{.name = "source",    	.has_arg = 1, 		.val = 's'},	/*æºä¸»æœºIPåœ°å€*/
+	{.name = "dest",        	.has_arg = 1, 		.val = 'd'},	/*ç›®çš„ä¸»æœºIPåœ°å€*/
+	{.name = "sport",        	.has_arg = 1, 		.val = 'm'},	/*æºç«¯å£åœ°å€*/
+	{.name = "dport",       	.has_arg = 1, 		.val = 'n'},	/*ç›®çš„ç«¯å£åœ°å€*/
+	{.name = "protocol", 	.has_arg = 2, 		.val = 'p'},	/*åè®®ç±»å‹*/
+	{.name = "list",    		.has_arg = 2, 		.val = 'L'},	/*è§„åˆ™åˆ—è¡¨*/
+	{.name = "flush",         	.has_arg = 2, 		.val = 'F'},	/*æ¸…ç©ºè§„åˆ™*/
+	{.name = "append", 	.has_arg = 2, 		.val = 'A'},	/*å¢åŠ è§„åˆ™åˆ°é“¾å°¾éƒ¨*/
+	{.name = "insert",     	.has_arg = 1, 		.val = 'I'},	/*å‘é“¾ä¸­å¢åŠ è§„åˆ™*/
+	{.name = "delete",  	.has_arg = 2, 		.val = 'D'},	/*åˆ é™¤è§„åˆ™*/
+	{.name = "interface",  	.has_arg = 1, 		.val = 'i'},	/*ç½‘ç»œæ¥å£*/
 	{NULL},
 };
 enum{
@@ -113,7 +113,7 @@ enum{
 	OPT_INT
 };
 
-static const char opts_short[] =  "s:d:m:n:p:L:F:A:I:D:i:",;	/*¶ÌÑ¡Ïî*/
+static const char opts_short[] =  "s:d:m:n:p:L:F:A:I:D:i:",;	/*çŸ­é€‰é¡¹*/
 static const vec chain_name[] = {	
 	{"INPUT",	5},
 	{"OUTPUT",	6},
@@ -223,49 +223,49 @@ do_command(int argc, char *argv[], 	struct opts_value *cmd_opt)
 	{
 		switch(c)
 		{
-			case 's':		/*Ô´Ö÷»úIPµØÖ·*/
+			case 's':		/*æºä¸»æœºIPåœ°å€*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
 					parse_opt(OPT_IP, optarg, &cmd_opt->source);
 				}
 				
 				break;
-			case 'd':/*Ä¿µÄÖ÷»úIPµØÖ·*/
+			case 'd':/*ç›®çš„ä¸»æœºIPåœ°å€*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
 					parse_opt(OPT_IP, optarg, &cmd_opt->dest);
 				}
 				
 				break;
-			case 'm':/*Ô´¶Ë¿ÚµØÖ·*/
+			case 'm':/*æºç«¯å£åœ°å€*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
 					parse_opt(OPT_PORT, optarg, &cmd_opt->sport);
 				}
 				
 				break;
-			case 'n':/*Ä¿µÄ¶Ë¿ÚµØÖ·*/
+			case 'n':/*ç›®çš„ç«¯å£åœ°å€*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
 					parse_opt(OPT_PORT, optarg, &cmd_opt->dport);
 				}
 				
 				break;
-			case 'p':/*Ğ­ÒéÀàĞÍ*/
+			case 'p':/*åè®®ç±»å‹*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
 					parse_opt(OPT_PROTOCOL, optarg, &cmd_opt->protocol);
 				}
 				
 				break;
-			case 'L':/*¹æÔòÁĞ±í*/
+			case 'L':/*è§„åˆ™åˆ—è¡¨*/
 				cmd |= CMD_LIST;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
 					parse_opt(OPT_CHAIN, optarg, &cmd_opt->chain);
 				}
 				
-			case 'F':/*Çå¿Õ¹æÔò*/
+			case 'F':/*æ¸…ç©ºè§„åˆ™*/
 				cmd |= CMD_FLUSH;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
@@ -273,7 +273,7 @@ do_command(int argc, char *argv[], 	struct opts_value *cmd_opt)
 				}
 				
 				break;
-			case 'A':/*Ôö¼Ó¹æÔòµ½Á´Î²²¿*/
+			case 'A':/*å¢åŠ è§„åˆ™åˆ°é“¾å°¾éƒ¨*/
 				cmd |= CMD_APPEND;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
@@ -281,7 +281,7 @@ do_command(int argc, char *argv[], 	struct opts_value *cmd_opt)
 				}
 				
 				break;
-			case 'I':/*ÏòÁ´ÖĞÔö¼Ó¹æÔò*/
+			case 'I':/*å‘é“¾ä¸­å¢åŠ è§„åˆ™*/
 				cmd |= CMD_INSERT;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
@@ -289,7 +289,7 @@ do_command(int argc, char *argv[], 	struct opts_value *cmd_opt)
 				}
 				
 				break;
-			case 'D':/*É¾³ı¹æÔò*/
+			case 'D':/*åˆ é™¤è§„åˆ™*/
 				cmd |= CMD_DELETE;
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
@@ -297,7 +297,7 @@ do_command(int argc, char *argv[], 	struct opts_value *cmd_opt)
 				}
 				
 				break;
-			case 'i':/*ÍøÂç½Ó¿Ú*/
+			case 'i':/*ç½‘ç»œæ¥å£*/
 				l_opt_arg = optarg;
 				if(l_opt_arg && l_opt_arg[0]!=':'){
 					parse_opt(OPT_STR, optarg, &cmd_opt->ifname);
@@ -347,13 +347,13 @@ struct sockaddr_nl
 
 void main(int argc, char *argv[]) 
 {
-#define MAX_PAYLOAD 1024  				/* ×î´ó¸ºÔØ³¤¶È*/
+#define MAX_PAYLOAD 1024  				/* æœ€å¤§è´Ÿè½½é•¿åº¦*/
 
-	struct sockaddr_nl source, dest;		/*Ô´µØÖ·ºÍÄ¿±êµØÖ·*/
-	int s = -1;							/*Ì×½Ó×ÖÎÄ¼şÃèÊö·û*/
-	struct msghdr msg;					/*ÓëÄÚºËÍ¨ĞÅÏûÏ¢*/
-	struct iovec iov;						/*ÏûÏ¢ÖĞµÄÏòÁ¿*/
-	char buffer[MAX_PAYLOAD];			/*nlmsghdrÊ¹ÓÃ»º³åÇø*/
+	struct sockaddr_nl source, dest;		/*æºåœ°å€å’Œç›®æ ‡åœ°å€*/
+	int s = -1;							/*å¥—æ¥å­—æ–‡ä»¶æè¿°ç¬¦*/
+	struct msghdr msg;					/*ä¸å†…æ ¸é€šä¿¡æ¶ˆæ¯*/
+	struct iovec iov;						/*æ¶ˆæ¯ä¸­çš„å‘é‡*/
+	char buffer[MAX_PAYLOAD];			/*nlmsghdrä½¿ç”¨ç¼“å†²åŒº*/
 	struct nlmsghdr *nlmsgh = NULL;
 	int err = -1;
 	struct opts_value cmd_opt;
@@ -361,9 +361,9 @@ void main(int argc, char *argv[])
 	do_command(argc, argv[], &cmd_opt);
 
 
-	signal(SIGINT, sig_int);				/*¹Ò½ÓÖĞ¶ÏĞÅºÅ*/
+	signal(SIGINT, sig_int);				/*æŒ‚æ¥ä¸­æ–­ä¿¡å·*/
 	
-	s = socket(PF_NETLINK, 				/*½¨Á¢Ì×½Ó×Ö*/
+	s = socket(PF_NETLINK, 				/*å»ºç«‹å¥—æ¥å­—*/
 		SOCK_RAW,NETLINK_TEST);
 	if(s < 0)
 	{
@@ -371,76 +371,76 @@ void main(int argc, char *argv[])
 		return -1;
 	}
 
-	/*ÉèÖÃÔ´µØÖ·*/
-	memset(&source, 0, sizeof(source));		/*Çå¿Õ»º³åÇø*/
-	source.nl_family 	= AF_NETLINK;		/*Ğ­Òé×å*/
-	source.nl_pid 		= getpid();  			/*±¾½ø³ÌID*/
-	source.nl_groups 	= 0;  				/*µ¥²¥*/
+	/*è®¾ç½®æºåœ°å€*/
+	memset(&source, 0, sizeof(source));		/*æ¸…ç©ºç¼“å†²åŒº*/
+	source.nl_family 	= AF_NETLINK;		/*åè®®æ—*/
+	source.nl_pid 		= getpid();  			/*æœ¬è¿›ç¨‹ID*/
+	source.nl_groups 	= 0;  				/*å•æ’­*/
 
-	err = bind(s, 							/*°ó¶¨*/
+	err = bind(s, 							/*ç»‘å®š*/
 		(struct sockaddr*)&source, sizeof(source));
 	{
 		printf("bind() error\n");
 		return -1;
 	}
 
-	memset(&dest, 0, sizeof(dest));			/*Çå¿Õ»º³åÇø*/
-	dest.nl_family 	= AF_NETLINK;		/*Ğ­Òé×å*/
-	dest.nl_pid 		= 0;   				/*·¢ËÍ¸øÄÚºË*/
-	dest.nl_groups 	= 0; 				/*µ¥²¥*/
+	memset(&dest, 0, sizeof(dest));			/*æ¸…ç©ºç¼“å†²åŒº*/
+	dest.nl_family 	= AF_NETLINK;		/*åè®®æ—*/
+	dest.nl_pid 		= 0;   				/*å‘é€ç»™å†…æ ¸*/
+	dest.nl_groups 	= 0; 				/*å•æ’­*/
 
-	nlmsgh=(struct nlmsghdr *)buffer;		/*½«nlmsg½á¹¹Ö¸Ïò»º³åÇø*/
-	/* Ìî³änetlinkÏûÏ¢Í·*/
-	nlmsgh->nlmsg_len 	= NLMSG_SPACE(MAX_PAYLOAD);/*³¤¶È*/
-	nlmsgh->nlmsg_pid 	= getpid();  		/*±¾½ø³ÌµÄPID*/
-	nlmsgh->nlmsg_flags 	= 0;				/*±êÖ¾*/
-	/* Ìî³änetlinkÏûÏ¢µÄ¸ºÔØ*/
+	nlmsgh=(struct nlmsghdr *)buffer;		/*å°†nlmsgç»“æ„æŒ‡å‘ç¼“å†²åŒº*/
+	/* å¡«å……netlinkæ¶ˆæ¯å¤´*/
+	nlmsgh->nlmsg_len 	= NLMSG_SPACE(MAX_PAYLOAD);/*é•¿åº¦*/
+	nlmsgh->nlmsg_pid 	= getpid();  		/*æœ¬è¿›ç¨‹çš„PID*/
+	nlmsgh->nlmsg_flags 	= 0;				/*æ ‡å¿—*/
+	/* å¡«å……netlinkæ¶ˆæ¯çš„è´Ÿè½½*/
 	memcpy(NLMSG_DATA(nlmsgh), &cmd_opt, sizeof(cmd_opt));
 
-	iov.iov_base 		= (void *)nlmsgh;		/*½«netlinkË½ÓĞÏûÏ¢Ğ´ÈëÏòÁ¿*/
-	iov.iov_len 		= nlmsgh->nlmsg_len;	/*ÏòÁ¿³¤¶È*/
-	msg.msg_name 	= (void *)&dest;		/*ÏûÏ¢Ãû³ÆÎªµØÖ·*/
-	msg.msg_namelen = sizeof(dest);		/*Ãû³Æ³¤¶È*/
-	msg.msg_iov 		= &iov;				/*ÏûÏ¢ÏòÁ¿*/
-	msg.msg_iovlen 	= 1;					/*ÏòÁ¿¸öÊı*/
+	iov.iov_base 		= (void *)nlmsgh;		/*å°†netlinkç§æœ‰æ¶ˆæ¯å†™å…¥å‘é‡*/
+	iov.iov_len 		= nlmsgh->nlmsg_len;	/*å‘é‡é•¿åº¦*/
+	msg.msg_name 	= (void *)&dest;		/*æ¶ˆæ¯åç§°ä¸ºåœ°å€*/
+	msg.msg_namelen = sizeof(dest);		/*åç§°é•¿åº¦*/
+	msg.msg_iov 		= &iov;				/*æ¶ˆæ¯å‘é‡*/
+	msg.msg_iovlen 	= 1;					/*å‘é‡ä¸ªæ•°*/
 
-	sendmsg(s, &msg, 0);					/*·¢ËÍÏûÏ¢*/
+	sendmsg(s, &msg, 0);					/*å‘é€æ¶ˆæ¯*/
 
-	/* ´ÓÄÚºË½ÓÊÕÏûÏ¢ */
+	/* ä»å†…æ ¸æ¥æ”¶æ¶ˆæ¯ */
 	memset(nlmsgh, 0, NLMSG_SPACE(MAX_PAYLOAD));
-	recvmsg(s, &msg, 0);					/*½ÓÊÕÏûÏ¢*/
+	recvmsg(s, &msg, 0);					/*æ¥æ”¶æ¶ˆæ¯*/
 	unsigned int retval = (unsigned int *)NLMSG_DATA(nlmsgh);
 	
-	if(cmd_opt.command.v_uint == CMD_LIST)/*»ñµÃ¹æÔòÁĞ±í*/
+	if(cmd_opt.command.v_uint == CMD_LIST)/*è·å¾—è§„åˆ™åˆ—è¡¨*/
 	{		
-		unsigned int sip = 0, dip = 0;		/*Ô­IPµØÖ·ºÍÄ¿µÄIPµØÖ·*/
-		unsigned short sport = 0, dport = 0;	/*Ô´¶Ë¿ÚºÍÄ¿µÄ¶Ë¿Ú*/
-		unsigned char proto = 0;			/*Ğ­ÒéÀàĞÍ*/
-		unsigned char action = 0;			/*¶¯×÷ÀàĞÍ*/
+		unsigned int sip = 0, dip = 0;		/*åŸIPåœ°å€å’Œç›®çš„IPåœ°å€*/
+		unsigned short sport = 0, dport = 0;	/*æºç«¯å£å’Œç›®çš„ç«¯å£*/
+		unsigned char proto = 0;			/*åè®®ç±»å‹*/
+		unsigned char action = 0;			/*åŠ¨ä½œç±»å‹*/
 		unsigned char chain_org = SIPFW_CHAIN_NUM, chain;
 		int i = 0;
-		for(i = retval; i > 0; i -= 10)		/*·Ö¶à´Î¶ÁÈ¡ÄÚºËÖĞµÄ¹æÔò*/
+		for(i = retval; i > 0; i -= 10)		/*åˆ†å¤šæ¬¡è¯»å–å†…æ ¸ä¸­çš„è§„åˆ™*/
 		{
 			int j = 0, len = 0;
 			memset(nlmsgh, 0, NLMSG_SPACE(MAX_PAYLOAD));
-			recvmsg(s, &msg, 0);			/*½ÓÊÕÏûÏ¢*/
+			recvmsg(s, &msg, 0);			/*æ¥æ”¶æ¶ˆæ¯*/
 			struct sipfw_rules *rules = NLMSG_DATA(nlmsgh);
 
-			len = msg.msg_iov.iov_len/sizeof(*rules);/*¹æÔò¸öÊı*/
-			for(j = 0; j < len; j++)			/*¶ÁÈ¡¹æÔò*/
+			len = msg.msg_iov.iov_len/sizeof(*rules);/*è§„åˆ™ä¸ªæ•°*/
+			for(j = 0; j < len; j++)			/*è¯»å–è§„åˆ™*/
 			{
-				action = rules->policy;		/*¶¯×÷*/
-				source = rules->saddr;		/*Ô´IP*/
-				sport = rules->sport;		/*Ô´¶Ë¿Ú*/
-				dest = rules->daddr;		/*Ä¿µÄIP*/
-				dport = rules->dport;		/*Ä¿µÄ¶Ë¿Ú*/
-				proto = rules->protocol;	/*Ğ­ÒéÀàĞÍ*/
-				chain = rules->chain;		/*Á´*/
-				if(chain != chain_org)		/*Á´·¢Éú±ä»¯*/
+				action = rules->policy;		/*åŠ¨ä½œ*/
+				source = rules->saddr;		/*æºIP*/
+				sport = rules->sport;		/*æºç«¯å£*/
+				dest = rules->daddr;		/*ç›®çš„IP*/
+				dport = rules->dport;		/*ç›®çš„ç«¯å£*/
+				proto = rules->protocol;	/*åè®®ç±»å‹*/
+				chain = rules->chain;		/*é“¾*/
+				if(chain != chain_org)		/*é“¾å‘ç”Ÿå˜åŒ–*/
 				{
-					chain_org = chain;		/*ĞŞ¸ÄÁ´*/
+					chain_org = chain;		/*ä¿®æ”¹é“¾*/
 				
-					printf("CHAIN %s Rules\n"	/*´òÓ¡±êÌâÀ¸*/
+					printf("CHAIN %s Rules\n"	/*æ‰“å°æ ‡é¢˜æ */
 						"ACTION"
 						"\tSOURCE"
 						"\tSPORT"
@@ -451,30 +451,30 @@ void main(int argc, char *argv[])
 						chain_name[chain_org]);
 				}
 				
-				printf("%s"				/*´òÓ¡ĞÅÏ¢*/
+				printf("%s"				/*æ‰“å°ä¿¡æ¯*/
 					"\t%s"
 					"\t%ud"
 					"\t%s"
 					"\t%ud",
 					"\t%d"
 					"\n",
-					action_name[i],		/*¶¯×÷Ãû³Æ*/
-					inet_ntoa(sip),			/*Ô´IPµØÖ·*/
-					sport,				/*Ô´¶Ë¿Ú*/
-					inet_ntoa(dip),		/*Ä¿µÄIP*/
-					dport,				/*Ä¿µÄ¶Ë¿Ú*/
-					proto);				/*Ğ­ÒéÀàĞÍ*/
+					action_name[i],		/*åŠ¨ä½œåç§°*/
+					inet_ntoa(sip),			/*æºIPåœ°å€*/
+					sport,				/*æºç«¯å£*/
+					inet_ntoa(dip),		/*ç›®çš„IP*/
+					dport,				/*ç›®çš„ç«¯å£*/
+					proto);				/*åè®®ç±»å‹*/
 			}
 		}
 	}
-	else									/*ÆäËûÃüÁîÀàĞÍ*/
+	else									/*å…¶ä»–å‘½ä»¤ç±»å‹*/
 	{
 		printf(" %s\n", retval?"Failure":"Success");
 	}
 	
 	//printf(" Received message payload: %s\n",		NLMSG_DATA(nlmsgh));
 
-	/* ¹Ø±Õ NetlinkÌ×½Ó×Ö */
+	/* å…³é—­ Netlinkå¥—æ¥å­— */
 	close(s);
 
 	return 0;

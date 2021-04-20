@@ -8,11 +8,11 @@
 #include "sipfw.h"
 #include "sipfw_para.h"
 
-/*Ò»Ğ©ÉùÃ÷*/
+/*ä¸€äº›å£°æ˜*/
 MODULE_DESCRIPTION("Simple IP FireWall module ");
 MODULE_AUTHOR("songjingbin<flyingfat@163.com>");
 
-/*½øÈë±¾µØÊı¾İµÄ¹³×Ó´¦Àíº¯Êı*/
+/*è¿›å…¥æœ¬åœ°æ•°æ®çš„é’©å­å¤„ç†å‡½æ•°*/
 static unsigned int
 SIPFW_HookLocalIn(unsigned int hook,
 	struct sk_buff **pskb,
@@ -20,33 +20,33 @@ SIPFW_HookLocalIn(unsigned int hook,
 	const struct net_device *out,
 	int (*okfn)(struct sk_buff *))
 {
-	struct sipfw_rules *l = NULL;/*¹æÔòÁ´Ö¸Õë*/
-	struct sk_buff *skb = *pskb;/*ÍøÂçÊı¾İ½á¹¹*/
-	struct sipfw_rules *found = NULL;/*ÕÒµ½µÄ¹æÔò*/
-	int	retval = 0;/*·µ»ØÖµ*/
+	struct sipfw_rules *l = NULL;/*è§„åˆ™é“¾æŒ‡é’ˆ*/
+	struct sk_buff *skb = *pskb;/*ç½‘ç»œæ•°æ®ç»“æ„*/
+	struct sipfw_rules *found = NULL;/*æ‰¾åˆ°çš„è§„åˆ™*/
+	int	retval = 0;/*è¿”å›å€¼*/
 	DBGPRINT("==>SIPFW_HookLocalIn\n");
-	if(cf.Invalid)/*·À»ğÇ½ÊÇ·ñ½ûÖ¹*/
+	if(cf.Invalid)/*é˜²ç«å¢™æ˜¯å¦ç¦æ­¢*/
 	{
-		retval = NF_ACCEPT;/*·À»ğÇ½¹Ø±Õ,ÈÃÊı¾İÍ¨¹ı*/
+		retval = NF_ACCEPT;/*é˜²ç«å¢™å…³é—­,è®©æ•°æ®é€šè¿‡*/
 		goto EXITSIPFW_HookLocalIn;
 	}
 	
 	
-	l = sipfw_tables[SIPFW_CHAIN_INPUT].rule;/*INPUTÁ´*/
-	found = SIPFW_IsMatch(skb, l);/*Êı¾İºÍÁ´ÖĞ¹æÔòÊÇ·ñÆ¥Åä*/
-	if(found)/*ÓĞÆ¥Åä¹æÔò*/
+	l = sipfw_tables[SIPFW_CHAIN_INPUT].rule;/*INPUTé“¾*/
+	found = SIPFW_IsMatch(skb, l);/*æ•°æ®å’Œé“¾ä¸­è§„åˆ™æ˜¯å¦åŒ¹é…*/
+	if(found)/*æœ‰åŒ¹é…è§„åˆ™*/
 	{
-		SIPFW_LogAppend(skb, found);/*¼ÇÂ¼*/
-		cf.HitNumber++;/*ÃüÖĞÊıÔö¼Ó*/
+		SIPFW_LogAppend(skb, found);/*è®°å½•*/
+		cf.HitNumber++;/*å‘½ä¸­æ•°å¢åŠ */
 	}
-	/*¸üĞÂ·µ»ØÖµ*/
+	/*æ›´æ–°è¿”å›å€¼*/
 	retval = found?found->action:cf.DefaultAction;
 EXITSIPFW_HookLocalIn:	
 	DBGPRINT("<==SIPFW_HookLocalIn\n");
 	return retval ;
 }
 
-/*´Ó±¾µØ·¢³öµÄÍøÂçÊı¾İ´¦Àí¹³×Óº¯Êı*/
+/*ä»æœ¬åœ°å‘å‡ºçš„ç½‘ç»œæ•°æ®å¤„ç†é’©å­å‡½æ•°*/
 static unsigned int
 SIPFW_HookLocaOut(unsigned int hook,
 	struct sk_buff **pskb,
@@ -54,25 +54,25 @@ SIPFW_HookLocaOut(unsigned int hook,
 	const struct net_device *out,
 	int (*okfn)(struct sk_buff *))
 {
-	struct sipfw_rules *l = NULL;/*¹æÔòÁ´Ö¸Õë*/
-	struct sk_buff *skb = *pskb;/*ÍøÂçÊı¾İ½á¹¹*/
-	struct sipfw_rules *found = NULL;/*ÕÒµ½µÄ¹æÔò*/
-	int	retval = 0;/*·µ»ØÖµ*/
+	struct sipfw_rules *l = NULL;/*è§„åˆ™é“¾æŒ‡é’ˆ*/
+	struct sk_buff *skb = *pskb;/*ç½‘ç»œæ•°æ®ç»“æ„*/
+	struct sipfw_rules *found = NULL;/*æ‰¾åˆ°çš„è§„åˆ™*/
+	int	retval = 0;/*è¿”å›å€¼*/
 	DBGPRINT("==>SIPFW_HookLocaOut\n");
-	if(cf.Invalid)/*·À»ğÇ½ÊÇ·ñ½ûÖ¹*/
+	if(cf.Invalid)/*é˜²ç«å¢™æ˜¯å¦ç¦æ­¢*/
 	{
-		retval = NF_ACCEPT;/*·À»ğÇ½¹Ø±Õ,ÈÃÊı¾İÍ¨¹ı*/
+		retval = NF_ACCEPT;/*é˜²ç«å¢™å…³é—­,è®©æ•°æ®é€šè¿‡*/
 		goto EXITSIPFW_HookLocaOut;
 	}
 	
-	l = sipfw_tables[SIPFW_CHAIN_OUTPUT].rule;/*OUTPUTÁ´*/
-	found = SIPFW_IsMatch(skb, l);/*Êı¾İºÍÁ´ÖĞ¹æÔòÊÇ·ñÆ¥Åä*/
+	l = sipfw_tables[SIPFW_CHAIN_OUTPUT].rule;/*OUTPUTé“¾*/
+	found = SIPFW_IsMatch(skb, l);/*æ•°æ®å’Œé“¾ä¸­è§„åˆ™æ˜¯å¦åŒ¹é…*/
 	if(found)
 	{
-		SIPFW_LogAppend(skb, found);/*¼ÇÂ¼*/
-		cf.HitNumber++;/*ÃüÖĞÊıÔö¼Ó*/
+		SIPFW_LogAppend(skb, found);/*è®°å½•*/
+		cf.HitNumber++;/*å‘½ä¸­æ•°å¢åŠ */
 	}
-	/*¸üĞÂ·µ»ØÖµ*/
+	/*æ›´æ–°è¿”å›å€¼*/
 	retval = found?found->action:cf.DefaultAction;
 	
 EXITSIPFW_HookLocaOut:
@@ -80,7 +80,7 @@ EXITSIPFW_HookLocaOut:
 	return retval;
 }
 
-/*´Ó±¾µØ·¢³öµÄÍøÂçÊı¾İ´¦Àí¹³×Óº¯Êı*/
+/*ä»æœ¬åœ°å‘å‡ºçš„ç½‘ç»œæ•°æ®å¤„ç†é’©å­å‡½æ•°*/
 static unsigned int
 SIPFW_HookForward(unsigned int hook,
 	struct sk_buff **pskb,
@@ -88,10 +88,10 @@ SIPFW_HookForward(unsigned int hook,
 	const struct net_device *out,
 	int (*okfn)(struct sk_buff *))
 {
-	struct sipfw_rules *l = NULL;/*¹æÔòÁ´Ö¸Õë*/
-	struct sk_buff *skb = *pskb;/*ÍøÂçÊı¾İ½á¹¹*/
-	struct sipfw_rules *found = NULL;/*ÕÒµ½µÄ¹æÔò*/
-	int	retval = 0;/*·µ»ØÖµ*/
+	struct sipfw_rules *l = NULL;/*è§„åˆ™é“¾æŒ‡é’ˆ*/
+	struct sk_buff *skb = *pskb;/*ç½‘ç»œæ•°æ®ç»“æ„*/
+	struct sipfw_rules *found = NULL;/*æ‰¾åˆ°çš„è§„åˆ™*/
+	int	retval = 0;/*è¿”å›å€¼*/
 	DBGPRINT("==>SIPFW_HookForward\n");
 	DBGPRINT("in device:%s,out device:%s\n",in->name, out->name);{
 	int i =0;int len =skb->dev->addr_len;
@@ -133,27 +133,27 @@ SIPFW_HookForward(unsigned int hook,
 
 	
 
-}	if(cf.Invalid)/*·À»ğÇ½ÊÇ·ñ½ûÖ¹*/
+}	if(cf.Invalid)/*é˜²ç«å¢™æ˜¯å¦ç¦æ­¢*/
 	{
-		retval = NF_ACCEPT;/*·À»ğÇ½¹Ø±Õ,ÈÃÊı¾İÍ¨¹ı*/
+		retval = NF_ACCEPT;/*é˜²ç«å¢™å…³é—­,è®©æ•°æ®é€šè¿‡*/
 		goto EXITSIPFW_HookForward;
 	}
 	
-	l = sipfw_tables[SIPFW_CHAIN_OUTPUT].rule;/*OUTPUTÁ´*/
-	found = SIPFW_IsMatch(skb, l);/*Êı¾İºÍÁ´ÖĞ¹æÔòÊÇ·ñÆ¥Åä*/
+	l = sipfw_tables[SIPFW_CHAIN_OUTPUT].rule;/*OUTPUTé“¾*/
+	found = SIPFW_IsMatch(skb, l);/*æ•°æ®å’Œé“¾ä¸­è§„åˆ™æ˜¯å¦åŒ¹é…*/
 	if(found)
 	{
-		SIPFW_LogAppend(skb, found);/*¼ÇÂ¼*/
-		cf.HitNumber++;/*ÃüÖĞÊıÔö¼Ó*/
+		SIPFW_LogAppend(skb, found);/*è®°å½•*/
+		cf.HitNumber++;/*å‘½ä¸­æ•°å¢åŠ */
 	}
-	/*¸üĞÂ·µ»ØÖµ*/
+	/*æ›´æ–°è¿”å›å€¼*/
 	retval = found?found->action:cf.DefaultAction;
 EXITSIPFW_HookForward:
 	DBGPRINT("<==SIPFW_HookForward\n");
 	return retval;
 }
 
-/*´Ó±¾µØ·¢³öµÄÍøÂçÊı¾İ´¦Àí¹³×Óº¯Êı*/
+/*ä»æœ¬åœ°å‘å‡ºçš„ç½‘ç»œæ•°æ®å¤„ç†é’©å­å‡½æ•°*/
 static unsigned int
 SIPFW_HookPreRouting(unsigned int hook,
 	struct sk_buff **pskb,
@@ -161,32 +161,32 @@ SIPFW_HookPreRouting(unsigned int hook,
 	const struct net_device *out,
 	int (*okfn)(struct sk_buff *))
 {
-	struct sipfw_rules *l = NULL;/*¹æÔòÁ´Ö¸Õë*/
-	struct sk_buff *skb = *pskb;/*ÍøÂçÊı¾İ½á¹¹*/
-	struct sipfw_rules *found = NULL;/*ÕÒµ½µÄ¹æÔò*/
-	int	retval = 0;/*·µ»ØÖµ*/
+	struct sipfw_rules *l = NULL;/*è§„åˆ™é“¾æŒ‡é’ˆ*/
+	struct sk_buff *skb = *pskb;/*ç½‘ç»œæ•°æ®ç»“æ„*/
+	struct sipfw_rules *found = NULL;/*æ‰¾åˆ°çš„è§„åˆ™*/
+	int	retval = 0;/*è¿”å›å€¼*/
 	DBGPRINT("==>SIPFW_HookPreRouting\n");
-	if(cf.Invalid)/*·À»ğÇ½ÊÇ·ñ½ûÖ¹*/
+	if(cf.Invalid)/*é˜²ç«å¢™æ˜¯å¦ç¦æ­¢*/
 	{
-		retval = NF_ACCEPT;/*·À»ğÇ½¹Ø±Õ,ÈÃÊı¾İÍ¨¹ı*/
+		retval = NF_ACCEPT;/*é˜²ç«å¢™å…³é—­,è®©æ•°æ®é€šè¿‡*/
 		goto EXITSIPFW_HookPreRouting;
 	}
 	
-	l = sipfw_tables[SIPFW_CHAIN_OUTPUT].rule;/*OUTPUTÁ´*/
-	found = SIPFW_IsMatch(skb, l);/*Êı¾İºÍÁ´ÖĞ¹æÔòÊÇ·ñÆ¥Åä*/
+	l = sipfw_tables[SIPFW_CHAIN_OUTPUT].rule;/*OUTPUTé“¾*/
+	found = SIPFW_IsMatch(skb, l);/*æ•°æ®å’Œé“¾ä¸­è§„åˆ™æ˜¯å¦åŒ¹é…*/
 	if(found)
 	{
-		SIPFW_LogAppend(skb, found);/*¼ÇÂ¼*/
-		cf.HitNumber++;/*ÃüÖĞÊıÔö¼Ó*/
+		SIPFW_LogAppend(skb, found);/*è®°å½•*/
+		cf.HitNumber++;/*å‘½ä¸­æ•°å¢åŠ */
 	}
-	/*¸üĞÂ·µ»ØÖµ*/
+	/*æ›´æ–°è¿”å›å€¼*/
 	retval = found?found->action:cf.DefaultAction;
 EXITSIPFW_HookPreRouting:
 	DBGPRINT("<==SIPFW_HookPreRouting\n");
 	return retval;
 }
 
-/*´Ó±¾µØ·¢³öµÄÍøÂçÊı¾İ´¦Àí¹³×Óº¯Êı*/
+/*ä»æœ¬åœ°å‘å‡ºçš„ç½‘ç»œæ•°æ®å¤„ç†é’©å­å‡½æ•°*/
 static unsigned int
 SIPFW_HookPostRouting(unsigned int hook,
 	struct sk_buff **pskb,
@@ -194,25 +194,25 @@ SIPFW_HookPostRouting(unsigned int hook,
 	const struct net_device *out,
 	int (*okfn)(struct sk_buff *))
 {
-	struct sipfw_rules *l = NULL;/*¹æÔòÁ´Ö¸Õë*/
-	struct sk_buff *skb = *pskb;/*ÍøÂçÊı¾İ½á¹¹*/
-	struct sipfw_rules *found = NULL;/*ÕÒµ½µÄ¹æÔò*/
-	int	retval = 0;/*·µ»ØÖµ*/
+	struct sipfw_rules *l = NULL;/*è§„åˆ™é“¾æŒ‡é’ˆ*/
+	struct sk_buff *skb = *pskb;/*ç½‘ç»œæ•°æ®ç»“æ„*/
+	struct sipfw_rules *found = NULL;/*æ‰¾åˆ°çš„è§„åˆ™*/
+	int	retval = 0;/*è¿”å›å€¼*/
 	DBGPRINT("==>SIPFW_HookPostRouting\n");
-	if(cf.Invalid)/*·À»ğÇ½ÊÇ·ñ½ûÖ¹*/
+	if(cf.Invalid)/*é˜²ç«å¢™æ˜¯å¦ç¦æ­¢*/
 	{
-		retval = NF_ACCEPT;/*·À»ğÇ½¹Ø±Õ,ÈÃÊı¾İÍ¨¹ı*/
+		retval = NF_ACCEPT;/*é˜²ç«å¢™å…³é—­,è®©æ•°æ®é€šè¿‡*/
 		goto EXITSIPFW_HookPostRouting;
 	}
 	
-	l = sipfw_tables[SIPFW_CHAIN_OUTPUT].rule;/*OUTPUTÁ´*/
-	found = SIPFW_IsMatch(skb, l);/*Êı¾İºÍÁ´ÖĞ¹æÔòÊÇ·ñÆ¥Åä*/
+	l = sipfw_tables[SIPFW_CHAIN_OUTPUT].rule;/*OUTPUTé“¾*/
+	found = SIPFW_IsMatch(skb, l);/*æ•°æ®å’Œé“¾ä¸­è§„åˆ™æ˜¯å¦åŒ¹é…*/
 	if(found)
 	{
-		SIPFW_LogAppend(skb, found);/*¼ÇÂ¼*/
-		cf.HitNumber++;/*ÃüÖĞÊıÔö¼Ó*/
+		SIPFW_LogAppend(skb, found);/*è®°å½•*/
+		cf.HitNumber++;/*å‘½ä¸­æ•°å¢åŠ */
 	}
-	/*¸üĞÂ·µ»ØÖµ*/
+	/*æ›´æ–°è¿”å›å€¼*/
 	retval = found?found->action:cf.DefaultAction;
 EXITSIPFW_HookPostRouting:
 	DBGPRINT("<==SIPFW_HookPostRouting\n");
@@ -220,63 +220,63 @@ EXITSIPFW_HookPostRouting:
 }
 
 
-/* ¹³×Ó¹Ò½Ó½á¹¹ */
+/* é’©å­æŒ‚æ¥ç»“æ„ */
 static struct nf_hook_ops sipfw_hooks[]  = {
 	{
-		.hook		= SIPFW_HookLocalIn,	/*±¾µØ½ÓÊÕÊı¾İ*/
-		.owner		= THIS_MODULE,			/*Ä£¿éËùÓĞÕß*/
-		.pf			= PF_INET,				/*ÍøÂçĞ­Òé*/
-		.hooknum	= NF_IP_LOCAL_IN,		/*¹Ò½Óµã*/
-		.priority		= NF_IP_PRI_FILTER-1,		/*ÓÅÏÈ¼¶*/
+		.hook		= SIPFW_HookLocalIn,	/*æœ¬åœ°æ¥æ”¶æ•°æ®*/
+		.owner		= THIS_MODULE,			/*æ¨¡å—æ‰€æœ‰è€…*/
+		.pf			= PF_INET,				/*ç½‘ç»œåè®®*/
+		.hooknum	= NF_IP_LOCAL_IN,		/*æŒ‚æ¥ç‚¹*/
+		.priority		= NF_IP_PRI_FILTER-1,		/*ä¼˜å…ˆçº§*/
 	},
 
 	{
-		.hook		= SIPFW_HookLocaOut,	/*±¾µØ·¢³öµÄÊı¾İ*/
-		.owner		= THIS_MODULE,			/*Ä£¿éËùÓĞÕß*/
-		.pf			= PF_INET,				/*ÍøÂçĞ­Òé*/
-		.hooknum	= NF_IP_LOCAL_OUT,		/*¹Ò½Óµã*/
-		.priority		= NF_IP_PRI_FILTER-1,		/*ÓÅÏÈ¼¶*/
+		.hook		= SIPFW_HookLocaOut,	/*æœ¬åœ°å‘å‡ºçš„æ•°æ®*/
+		.owner		= THIS_MODULE,			/*æ¨¡å—æ‰€æœ‰è€…*/
+		.pf			= PF_INET,				/*ç½‘ç»œåè®®*/
+		.hooknum	= NF_IP_LOCAL_OUT,		/*æŒ‚æ¥ç‚¹*/
+		.priority		= NF_IP_PRI_FILTER-1,		/*ä¼˜å…ˆçº§*/
 	},
 	{
-		.hook		= SIPFW_HookForward,	/*±¾µØ·¢³öµÄÊı¾İ*/
-		.owner		= THIS_MODULE,			/*Ä£¿éËùÓĞÕß*/
-		.pf			= PF_INET,				/*ÍøÂçĞ­Òé*/
-		.hooknum	= NF_IP_FORWARD,		/*¹Ò½Óµã*/
-		.priority		= NF_IP_PRI_FILTER-1,		/*ÓÅÏÈ¼¶*/
+		.hook		= SIPFW_HookForward,	/*æœ¬åœ°å‘å‡ºçš„æ•°æ®*/
+		.owner		= THIS_MODULE,			/*æ¨¡å—æ‰€æœ‰è€…*/
+		.pf			= PF_INET,				/*ç½‘ç»œåè®®*/
+		.hooknum	= NF_IP_FORWARD,		/*æŒ‚æ¥ç‚¹*/
+		.priority		= NF_IP_PRI_FILTER-1,		/*ä¼˜å…ˆçº§*/
 	},
 	{
-		.hook		= SIPFW_HookPreRouting,	/*±¾µØ·¢³öµÄÊı¾İ*/
-		.owner		= THIS_MODULE,			/*Ä£¿éËùÓĞÕß*/
-		.pf			= PF_INET,				/*ÍøÂçĞ­Òé*/
-		.hooknum	= NF_IP_PRE_ROUTING,		/*¹Ò½Óµã*/
-		.priority		= NF_IP_PRI_FILTER-1,		/*ÓÅÏÈ¼¶*/
+		.hook		= SIPFW_HookPreRouting,	/*æœ¬åœ°å‘å‡ºçš„æ•°æ®*/
+		.owner		= THIS_MODULE,			/*æ¨¡å—æ‰€æœ‰è€…*/
+		.pf			= PF_INET,				/*ç½‘ç»œåè®®*/
+		.hooknum	= NF_IP_PRE_ROUTING,		/*æŒ‚æ¥ç‚¹*/
+		.priority		= NF_IP_PRI_FILTER-1,		/*ä¼˜å…ˆçº§*/
 	},
 	{
-		.hook		= SIPFW_HookPostRouting,	/*±¾µØ·¢³öµÄÊı¾İ*/
-		.owner		= THIS_MODULE,			/*Ä£¿éËùÓĞÕß*/
-		.pf			= PF_INET,				/*ÍøÂçĞ­Òé*/
-		.hooknum	= NF_IP_POST_ROUTING,		/*¹Ò½Óµã*/
-		.priority		= NF_IP_PRI_FILTER-1,		/*ÓÅÏÈ¼¶*/
+		.hook		= SIPFW_HookPostRouting,	/*æœ¬åœ°å‘å‡ºçš„æ•°æ®*/
+		.owner		= THIS_MODULE,			/*æ¨¡å—æ‰€æœ‰è€…*/
+		.pf			= PF_INET,				/*ç½‘ç»œåè®®*/
+		.hooknum	= NF_IP_POST_ROUTING,		/*æŒ‚æ¥ç‚¹*/
+		.priority		= NF_IP_PRI_FILTER-1,		/*ä¼˜å…ˆçº§*/
 	},
 };
 
 
 
-/*Ä£¿é³õÊ¼»¯*/
+/*æ¨¡å—åˆå§‹åŒ–*/
 static int __init SIPFW_Init(void)
 {
 	int ret = -1;
 	DBGPRINT("==>SIPFW_Init\n");
 	
-	ret = SIPFW_HandleConf();/*¶ÁÈ¡·À»ğÇ½ÅäÖÃÎÄ¼ş*/
+	ret = SIPFW_HandleConf();/*è¯»å–é˜²ç«å¢™é…ç½®æ–‡ä»¶*/
 	
-	ret =SIPFW_NLCreate();/*½¨Á¢NetlinkÌ×½Ó×Ö×¼±¸ºÍÓÃ»§¿Õ¼äÍ¨ĞÅ*/
+	ret =SIPFW_NLCreate();/*å»ºç«‹Netlinkå¥—æ¥å­—å‡†å¤‡å’Œç”¨æˆ·ç©ºé—´é€šä¿¡*/
 	if(ret)
 	{
 		goto error1;
 	}
 	
-	ret =SIPFW_Proc_Init();/*½¨Á¢PROCĞéÄâÎÄ¼ş*/
+	ret =SIPFW_Proc_Init();/*å»ºç«‹PROCè™šæ‹Ÿæ–‡ä»¶*/
 	if(ret)
 	{
 		goto error2;
@@ -313,4 +313,3 @@ static void __exit SIPFW_Exit(void)
 module_init(SIPFW_Init);
 module_exit(SIPFW_Exit);
 MODULE_LICENSE("GPL/BSD");
-

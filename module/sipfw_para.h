@@ -1,34 +1,34 @@
 #ifndef __SIPFW_PARA_H__
 #define __SIPFW_PARA_H__
-const vec sipfw_chain_name[] = {		/*Á´µÄÃû³Æ*/
-	{"INPUT",	5,0},					/*INPUTÁ´*/
-	{"OUTPUT",	6,0},					/*OUTPUTÁ´*/
-	{"FORWARD",	7,0},					/*FORWARDÁ´*/
-	{NULL,		0,0}  };				/*½áÎ²*/
+const vec sipfw_chain_name[] = {		/*é“¾çš„åç§°*/
+	{"INPUT",	5,0},					/*INPUTé“¾*/
+	{"OUTPUT",	6,0},					/*OUTPUTé“¾*/
+	{"FORWARD",	7,0},					/*FORWARDé“¾*/
+	{NULL,		0,0}  };				/*ç»“å°¾*/
 
-const vec sipfw_action_name[] = {		/*¶¯×÷Ãû³Æ*/
+const vec sipfw_action_name[] = {		/*åŠ¨ä½œåç§°*/
 
-	{"DROP",	4,0},						/*DROP¶¯×÷*/
-	{"ACCEPT",	6,0},					/*ACCEPT¶¯×÷*/
-	{"STOLEN",	6,0},					/*STOLEN¶¯×÷*/
-	{"QUEUE",	6,0},					/*QUEUE¶¯×÷*/
-	{"REPEAT",	6,0},					/*REPEAT¶¯×÷*/
+	{"DROP",	4,0},						/*DROPåŠ¨ä½œ*/
+	{"ACCEPT",	6,0},					/*ACCEPTåŠ¨ä½œ*/
+	{"STOLEN",	6,0},					/*STOLENåŠ¨ä½œ*/
+	{"QUEUE",	6,0},					/*QUEUEåŠ¨ä½œ*/
+	{"REPEAT",	6,0},					/*REPEATåŠ¨ä½œ*/
 	
-	{NULL,		0,0}  };				/*½áÎ²*/
-const vec sipfw_command_name[] = {	/*ÃüÁîÃû³Æ*/
-	{"INSERT",	6,0},					/*²åÈë*/
-	{"DELETE",	6,0},					/*É¾³ý*/
-	{"APPEND",	6,0},					/*Î²²¿Ôö¼Ó*/
-	{"LIST",	4,0},						/*ÁÐ±í¹æÔò*/
-	{"FLUSH",	5,0},					/*Çå¿Õ¹æÔò*/
-	{NULL,		0,0}  };				/*½áÎ²*/
+	{NULL,		0,0}  };				/*ç»“å°¾*/
+const vec sipfw_command_name[] = {	/*å‘½ä»¤åç§°*/
+	{"INSERT",	6,0},					/*æ’å…¥*/
+	{"DELETE",	6,0},					/*åˆ é™¤*/
+	{"APPEND",	6,0},					/*å°¾éƒ¨å¢žåŠ */
+	{"LIST",	4,0},						/*åˆ—è¡¨è§„åˆ™*/
+	{"FLUSH",	5,0},					/*æ¸…ç©ºè§„åˆ™*/
+	{NULL,		0,0}  };				/*ç»“å°¾*/
 
-const vec sipfw_protocol_name[] = {	/*Ð­ÒéÀàÐÍÃû³Æ*/
-	{"tcp",	3,IPPROTO_TCP},						/*TCPÐ­Òé*/
-	{"udp",	3,IPPROTO_UDP},						/*UDPÐ­Òé*/
-	{"icmp",	4,IPPROTO_ICMP},						/*ICMPÐ­Òé*/
+const vec sipfw_protocol_name[] = {	/*åè®®ç±»åž‹åç§°*/
+	{"tcp",	3,IPPROTO_TCP},						/*TCPåè®®*/
+	{"udp",	3,IPPROTO_UDP},						/*UDPåè®®*/
+	{"icmp",	4,IPPROTO_ICMP},						/*ICMPåè®®*/
 	{"igmp",	4,IPPROTO_IGMP},						/*IGMP*/
-	{NULL,		0,0}  };				/*½áÎ²*/
+	{NULL,		0,0}  };				/*ç»“å°¾*/
 	
 #ifdef __KERNEL__
 struct sipfw_conf cf={SIPFW_ACTION_ACCEPT, "/etc/sipfw.rules","/etc/sipfw.log",0,0,0};
