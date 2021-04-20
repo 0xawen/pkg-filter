@@ -10,7 +10,7 @@
 
 /*一些声明*/
 MODULE_DESCRIPTION("Simple IP FireWall module ");
-MODULE_AUTHOR("songjingbin<flyingfat@163.com>");
+MODULE_AUTHOR("zhangzhanwen@qq.com");
 
 /*进入本地数据的钩子处理函数*/
 static unsigned int
